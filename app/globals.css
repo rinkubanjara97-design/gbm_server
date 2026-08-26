@@ -29,11 +29,6 @@
   background-position: 0 0, 15px 15px;
 }
 
-/* Gold Accent Border Gradient */
-.gold-border {
-  border-image: linear-gradient(135deg, #D4AF37 0%, #F5E69C 50%, #C59B27 100%) 1;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

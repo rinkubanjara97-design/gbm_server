@@ -19,17 +19,17 @@ export default async function GalleryPage() {
   )
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="text-xs font-bold uppercase tracking-widest text-gold-600">
-          Visual Craftsmanship Showcase
+      <div className="text-center max-w-3xl mx-auto space-y-3">
+        <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#A63D2F]">
+          Visual Crafts Showcase
         </span>
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-stone-900">
+        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#2B2723]">
           Artisanal Photography Gallery
         </h1>
-        <p className="text-stone-600 text-base font-light">
-          A visual feast of our handcrafted marble deity sculptures, royal home shrines, inlay table tops, and decor artifacts.
+        <p className="text-[#2B2723]/70 text-sm font-light">
+          A visual journey through our white Makrana marble deity idols, home temples, Pietra Dura inlay art, and Rajasthani wooden crafts.
         </p>
       </div>
 
@@ -38,37 +38,37 @@ export default async function GalleryPage() {
         {galleryImages.map((item, idx) => (
           <div
             key={item.id || idx}
-            className="break-inside-avoid relative rounded-2xl overflow-hidden shadow-lg border border-stone-200 group bg-stone-100 transition-all duration-500 hover:shadow-2xl"
+            className="break-inside-avoid relative rounded-sm overflow-hidden border border-[#E4DDCF] group bg-[#E4DDCF]/20 transition-all duration-300 hover:shadow-md"
           >
-            <div className="relative min-h-[280px] sm:min-h-[360px] w-full">
+            <div className="relative min-h-[260px] sm:min-h-[340px] w-full">
               <Image
                 src={item.image_url}
                 alt={item.product_name}
                 fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
 
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 text-white">
-              <span className="text-[10px] uppercase tracking-widest text-gold-400 font-bold block mb-1">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#2B2723]/90 via-[#2B2723]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-white">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#B8924A] font-bold block mb-1">
                 {item.category_name}
               </span>
-              <h3 className="font-serif text-lg font-bold line-clamp-2">{item.product_name}</h3>
+              <h3 className="font-serif text-base font-bold line-clamp-2">{item.product_name}</h3>
 
-              <div className="flex items-center gap-3 mt-4">
+              <div className="flex items-center gap-2 mt-3">
                 <Link
                   href={`/products/${item.product_slug}`}
-                  className="flex-1 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-semibold uppercase tracking-wider py-2.5 rounded-lg text-center transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-wider py-2 rounded-sm text-center transition-colors flex items-center justify-center gap-1"
                 >
                   <Eye className="w-3.5 h-3.5" /> View Product
                 </Link>
                 <a
-                  href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20saw%20this%20photo%20in%20your%20gallery%20and%20want%20details:%20"${encodeURIComponent(
+                  href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20saw%20this%20photo%20in%20your%20gallery:%20"${encodeURIComponent(
                     item.product_name
                   )}"`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#25D366] hover:bg-[#20bd5a] text-white p-2.5 rounded-lg transition-colors"
+                  className="bg-[#25D366] hover:bg-[#20bd5a] text-white p-2 rounded-sm transition-colors"
                   title="Enquire on WhatsApp"
                 >
                   <MessageCircle className="w-4 h-4 fill-current" />

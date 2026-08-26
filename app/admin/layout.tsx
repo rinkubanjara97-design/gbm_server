@@ -3,7 +3,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderTree, Package, Inbox, LogOut, Gem, ExternalLink } from 'lucide-react'
+import { LayoutDashboard, FolderTree, Package, Inbox, LogOut, ExternalLink } from 'lucide-react'
+import { ChiselIcon } from '@/components/ui/ChiselIcons'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -20,20 +21,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ]
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-[#F7F4EF] flex flex-col md:flex-row font-sans">
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-stone-900 text-stone-300 p-6 flex flex-col justify-between shrink-0 border-r border-stone-800">
+      <aside className="w-full md:w-64 bg-[#2B2723] text-[#E4DDCF] p-6 flex flex-col justify-between shrink-0 border-r border-[#A63D2F]">
         <div className="space-y-8">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-maroon-900 border border-gold-400 flex items-center justify-center">
-              <Gem className="w-4 h-4 text-gold-400" />
+            <div className="w-8 h-8 rounded-sm bg-[#A63D2F] border border-[#B8924A]/40 flex items-center justify-center">
+              <ChiselIcon className="w-4 h-4 text-white" />
             </div>
             <div>
-              <span className="font-serif text-lg font-bold text-white uppercase tracking-wider block">
+              <span className="font-serif text-base font-bold text-white uppercase tracking-wider block">
                 GBM Admin
               </span>
-              <span className="text-[10px] text-gold-400 uppercase tracking-widest block">CMS Portal</span>
+              <span className="text-[9px] text-[#B8924A] uppercase font-mono tracking-widest block">CMS Portal</span>
             </div>
           </div>
 
@@ -46,13 +47,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors ${
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-sm text-xs font-mono font-semibold uppercase tracking-wider transition-colors ${
                     isActive
-                      ? 'bg-maroon-900 text-white font-bold shadow-md border-l-4 border-gold-400'
-                      : 'text-stone-400 hover:bg-stone-800 hover:text-white'
+                      ? 'bg-[#A63D2F] text-white font-bold border-l-2 border-[#B8924A]'
+                      : 'text-[#E4DDCF]/70 hover:bg-[#1C1917] hover:text-white'
                   }`}
                 >
-                  <Icon className="w-4 h-4 text-gold-400" />
+                  <Icon className="w-4 h-4 text-[#B8924A]" />
                   {item.name}
                 </Link>
               )
@@ -61,18 +62,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Footer Actions */}
-        <div className="pt-6 border-t border-stone-800 space-y-3">
+        <div className="pt-6 border-t border-[#E4DDCF]/15 space-y-2">
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between text-xs text-stone-400 hover:text-white px-3 py-2 rounded-lg bg-stone-800/50"
+            className="flex items-center justify-between text-xs font-mono text-[#E4DDCF]/70 hover:text-white px-3 py-2 rounded-sm bg-[#1C1917]"
           >
             <span>View Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <ExternalLink className="w-3.5 h-3.5 text-[#B8924A]" />
           </Link>
           <Link
             href="/admin/login"
-            className="flex items-center gap-2 text-xs text-rose-400 hover:text-rose-300 px-3 py-2 rounded-lg"
+            className="flex items-center gap-2 text-xs font-mono text-rose-400 hover:text-rose-300 px-3 py-2 rounded-sm"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>

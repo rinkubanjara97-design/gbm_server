@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
-import { Cinzel, Plus_Jakarta_Sans } from 'next/font/google'
+import { Fraunces, Plus_Jakarta_Sans, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
 
-const cinzel = Cinzel({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-cinzel',
+  variable: '--font-fraunces',
   display: 'swap',
 })
 
@@ -17,10 +17,17 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 })
 
+const ibmMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-ibm-mono',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'GBM Marble Handicrafts | Handcrafted Marble Statues, Mandirs & Artisanal Decor',
-  description: 'Premier manufacturer and exporter of white Makrana marble deity statues, home temples, Pietra Dura inlay table tops, and Rajasthani handicrafts.',
-  keywords: 'GBM Marble, Marble Statues, Marble Mandir, Makrana Marble, Ganesha Statue, Radha Krishna Statue, Marble Inlay, Rajasthani Handicrafts, Jaipur Marble Art',
+  title: 'GBM Marble Handicrafts | Handcrafted White Makrana Marble Statues & Mandirs',
+  description: 'Premier Rajasthani workshop hand-carving white Makrana marble deity idols, home temples, Pietra Dura inlay tables, and decorative urlis.',
+  keywords: 'GBM Marble Handicrafts, Makrana Marble Statue, Rajasthani Marble Temple, Ganesha Marble Idol, Pietra Dura Inlay Table, Marble Urli Bowl',
 }
 
 export default function RootLayout({
@@ -29,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${cinzel.variable} ${jakarta.variable}`}>
-      <body className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1C1917] antialiased">
+    <html lang="en" className={`${fraunces.variable} ${jakarta.variable} ${ibmMono.variable}`}>
+      <body className="min-h-screen flex flex-col bg-[#F7F4EF] text-[#2B2723] antialiased font-sans selection:bg-[#A63D2F] selection:text-white">
         <Navbar />
         <main className="flex-1 pt-20">{children}</main>
         <Footer />

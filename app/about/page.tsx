@@ -1,73 +1,75 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Award, ShieldCheck, HeartHandshake, Globe, ArrowRight, MessageCircle } from 'lucide-react'
+import { ArrowRight, MessageCircle } from 'lucide-react'
+import { ChiselIcon, StoneBlockIcon, CaliperIcon } from '@/components/ui/ChiselIcons'
 
 export default function AboutPage() {
   return (
-    <div className="space-y-20 pb-16">
+    <div className="space-y-16 pb-16">
       {/* Hero Banner */}
-      <section className="relative py-24 bg-stone-900 text-white overflow-hidden">
+      <section className="relative py-20 bg-[#2B2723] text-white overflow-hidden border-b border-[#A63D2F]">
         <div className="absolute inset-0 z-0">
           <Image
             src="https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1920&auto=format&fit=crop"
             alt="GBM Marble Craftsmanship Heritage"
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-25"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#FAF7F2] via-stone-950/60 to-stone-950/90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#F7F4EF] via-[#2B2723]/60 to-[#2B2723]/90" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-4">
-          <span className="text-xs font-bold uppercase tracking-widest text-gold-400">
-            Our Story & Legacy
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-3">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#B8924A]">
+            Our Heritage & Story
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-white leading-tight">
+          <h1 className="font-serif text-4xl sm:text-6xl font-bold text-white">
             GBM Marble Handicrafts
           </h1>
-          <p className="text-stone-300 text-lg font-light max-w-2xl mx-auto leading-relaxed">
-            Carving eternal divine beauty from pure white Makrana marble for homes, temples, and collectors worldwide.
+          <p className="text-[#E4DDCF]/80 text-base font-light max-w-2xl mx-auto leading-relaxed">
+            Sculpting eternal divine beauty from pure white Makrana marble for home mandirs, villas, and collectors worldwide.
           </p>
         </div>
       </section>
 
       {/* Main Story & Values */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-gold-600 block">
-              Rajasthan&apos;s Stone Heritage
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+          <div className="space-y-5">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#A63D2F] block">
+              Rajasthan Stone Architecture
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 leading-tight">
-              Preserving Ancient Sculpting Techniques for the Modern Era
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#2B2723] leading-tight">
+              Preserving Traditional Stone Chiseling for Generations
             </h2>
-            <p className="text-stone-600 text-base leading-relaxed font-light">
-              GBM Marble Handicrafts was founded with a passion to carry forward Rajasthan&apos;s centuries-old legacy of marble sculpting. Makrana white marble—the very same marble used in the Taj Mahal—is globally renowned for its pure crystal density and timeless shine that never yellows over centuries.
+            <p className="text-[#2B2723]/80 text-sm leading-relaxed font-light">
+              GBM Marble Handicrafts inherits Rajasthan&apos;s rich legacy of master stone carvers. Makrana white marble—the very same marble chosen for the Taj Mahal—is globally celebrated for its translucent crystal structure and timeless sheen that never dulls over centuries.
             </p>
-            <p className="text-stone-600 text-base leading-relaxed font-light">
-              Every idol of Lord Ganesha, Radha Krishna, Shiv Parivar, or custom temple carved at our workshops undergoes meticulous hand-detailing by senior sculptors who have inherited their skills across generations.
+            <p className="text-[#2B2723]/80 text-sm leading-relaxed font-light">
+              Every idol of Lord Ganesha, Radha Krishna, Shiv Parivar, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom beauty.
             </p>
-            <div className="pt-2 flex items-center gap-6">
+
+            <div className="pt-2 flex items-center gap-6 font-mono border-t border-[#E4DDCF]">
               <div>
-                <span className="font-serif text-3xl font-bold text-maroon-900 block">30+</span>
-                <span className="text-xs text-stone-500 font-medium uppercase tracking-wider">Years Experience</span>
+                <span className="font-serif text-3xl font-bold text-[#A63D2F] block">30+</span>
+                <span className="text-[10px] text-[#2B2723]/60 uppercase tracking-wider">Years Legacy</span>
               </div>
-              <div className="h-10 w-px bg-stone-300" />
+              <div className="h-8 w-px bg-[#E4DDCF]" />
               <div>
-                <span className="font-serif text-3xl font-bold text-maroon-900 block">1000+</span>
-                <span className="text-xs text-stone-500 font-medium uppercase tracking-wider">Temples Carved</span>
+                <span className="font-serif text-3xl font-bold text-[#A63D2F] block">1000+</span>
+                <span className="text-[10px] text-[#2B2723]/60 uppercase tracking-wider">Temples Carved</span>
               </div>
-              <div className="h-10 w-px bg-stone-300" />
+              <div className="h-8 w-px bg-[#E4DDCF]" />
               <div>
-                <span className="font-serif text-3xl font-bold text-maroon-900 block">25+</span>
-                <span className="text-xs text-stone-500 font-medium uppercase tracking-wider">Countries Exported</span>
+                <span className="font-serif text-3xl font-bold text-[#A63D2F] block">25+</span>
+                <span className="text-[10px] text-[#2B2723]/60 uppercase tracking-wider">Countries Exported</span>
               </div>
             </div>
           </div>
 
-          <div className="relative h-[440px] rounded-2xl overflow-hidden shadow-2xl border border-gold-300/40">
+          <div className="relative h-[400px] rounded-sm overflow-hidden border border-[#E4DDCF] bg-stone-900">
             <Image
-              src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1000&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1000&auto=format&fit=crop"
               alt="Marble Mandir Workshop"
               fill
               className="object-cover"
@@ -77,47 +79,51 @@ export default function AboutPage() {
       </section>
 
       {/* 4 Steps of Craftsmanship */}
-      <section className="bg-white py-16 border-y border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-gold-600">
+      <section className="bg-white py-14 border-y border-[#E4DDCF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#A63D2F]">
               Process of Creation
             </span>
-            <h2 className="font-serif text-3xl font-bold text-stone-900">
+            <h2 className="font-serif text-3xl font-bold text-[#2B2723]">
               Our 4-Stage Craftsmanship Process
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="p-6 bg-stone-50 rounded-2xl border border-stone-200 relative space-y-3">
-              <span className="font-serif text-4xl font-bold text-gold-500/40 block">01</span>
-              <h3 className="font-serif font-bold text-stone-900 text-lg">Stone Selection</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Hand-selecting flawless white Makrana or Vietnam marble blocks with zero internal cracks or blemishes.
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="p-5 bg-[#F7F4EF] rounded-sm border border-[#E4DDCF] space-y-2">
+              <StoneBlockIcon className="w-6 h-6 text-[#B8924A]" />
+              <span className="font-mono text-xs text-[#A63D2F] font-bold block">Stage 01</span>
+              <h3 className="font-serif font-bold text-[#2B2723] text-base">Stone Selection</h3>
+              <p className="text-xs text-[#2B2723]/70 font-light leading-relaxed">
+                Hand-selecting flawless white Makrana marble blocks without internal flaws or discoloration.
               </p>
             </div>
 
-            <div className="p-6 bg-stone-50 rounded-2xl border border-stone-200 relative space-y-3">
-              <span className="font-serif text-4xl font-bold text-gold-500/40 block">02</span>
-              <h3 className="font-serif font-bold text-stone-900 text-lg">Rough Chisel Carving</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Roughing out divine proportions and silhouettes according to traditional Shilpa Shastra guidelines.
+            <div className="p-5 bg-[#F7F4EF] rounded-sm border border-[#E4DDCF] space-y-2">
+              <ChiselIcon className="w-6 h-6 text-[#B8924A]" />
+              <span className="font-mono text-xs text-[#A63D2F] font-bold block">Stage 02</span>
+              <h3 className="font-serif font-bold text-[#2B2723] text-base">Chisel Carving</h3>
+              <p className="text-xs text-[#2B2723]/70 font-light leading-relaxed">
+                Roughing out divine silhouettes and traditional proportions according to Shilpa Shastra guidelines.
               </p>
             </div>
 
-            <div className="p-6 bg-stone-50 rounded-2xl border border-stone-200 relative space-y-3">
-              <span className="font-serif text-4xl font-bold text-gold-500/40 block">03</span>
-              <h3 className="font-serif font-bold text-stone-900 text-lg">Fine Hand Detailing</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Carving expressive facial features, flowing garments, jewelry, and ornate floral jali borders.
+            <div className="p-5 bg-[#F7F4EF] rounded-sm border border-[#E4DDCF] space-y-2">
+              <CaliperIcon className="w-6 h-6 text-[#B8924A]" />
+              <span className="font-mono text-xs text-[#A63D2F] font-bold block">Stage 03</span>
+              <h3 className="font-serif font-bold text-[#2B2723] text-base">Fine Detailing</h3>
+              <p className="text-xs text-[#2B2723]/70 font-light leading-relaxed">
+                Detailing expressive facial features, flowing garments, jewelry, and ornate floral jali borders.
               </p>
             </div>
 
-            <div className="p-6 bg-stone-50 rounded-2xl border border-stone-200 relative space-y-3">
-              <span className="font-serif text-4xl font-bold text-gold-500/40 block">04</span>
-              <h3 className="font-serif font-bold text-stone-900 text-lg">Diamond Polish & Gold Work</h3>
-              <p className="text-xs text-stone-600 leading-relaxed">
-                Water polishing for mirror sheen, followed by optional 24K gold foil leafing and Meenakari painting.
+            <div className="p-5 bg-[#F7F4EF] rounded-sm border border-[#E4DDCF] space-y-2">
+              <ChiselIcon className="w-6 h-6 text-[#B8924A]" />
+              <span className="font-mono text-xs text-[#A63D2F] font-bold block">Stage 04</span>
+              <h3 className="font-serif font-bold text-[#2B2723] text-base">Diamond Polish & Gold</h3>
+              <p className="text-xs text-[#2B2723]/70 font-light leading-relaxed">
+                Water polishing for smooth touch, followed by optional 24K gold leafing and Meenakari accents.
               </p>
             </div>
           </div>
@@ -125,25 +131,25 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Strip */}
-      <section className="max-w-5xl mx-auto px-4 text-center bg-gradient-to-r from-maroon-900 to-stone-900 text-white p-12 rounded-3xl shadow-2xl border border-gold-400/40 space-y-6">
-        <h2 className="font-serif text-3xl sm:text-4xl font-bold">
+      <section className="max-w-5xl mx-auto px-4 text-center bg-[#2B2723] text-white p-10 rounded-sm shadow-md border border-[#A63D2F] space-y-5">
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold">
           Commission Your Custom Marble Temple or Statue Today
         </h2>
-        <p className="text-stone-300 text-sm max-w-xl mx-auto font-light">
-          Have specific dimensions or a custom deity design in mind? Speak directly with our master artisans.
+        <p className="text-[#E4DDCF]/80 text-xs sm:text-sm max-w-xl mx-auto font-light">
+          Have specific dimensions or custom temple architectural designs? Speak directly with our master craftsmen.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <a
             href="https://wa.me/919210702703"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+            className="bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold px-7 py-3 rounded-sm text-xs uppercase tracking-wider flex items-center gap-2"
           >
             <MessageCircle className="w-4 h-4 fill-current" /> WhatsApp Inquiry
           </a>
           <Link
             href="/contact"
-            className="bg-white hover:bg-stone-100 text-stone-900 font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-wider shadow-lg flex items-center gap-2"
+            className="bg-[#A63D2F] hover:bg-[#8C3125] text-white font-bold px-7 py-3 rounded-sm text-xs uppercase tracking-wider flex items-center gap-2"
           >
             Contact Details <ArrowRight className="w-4 h-4" />
           </Link>

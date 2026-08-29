@@ -1,32 +1,26 @@
 'use client'
 
 import React from 'react'
-import { MessageCircle } from 'lucide-react'
+import { WhatsAppIcon } from './WhatsAppIcon'
 
-interface WhatsAppButtonProps {
-  productName?: string
-}
-
-export function WhatsAppButton({ productName }: WhatsAppButtonProps) {
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919210702703'
-  
-  const text = productName
-    ? encodeURIComponent(`Namaste GBM Marble Handicrafts, I am interested in inquiring about "${productName}". Please share details and pricing.`)
-    : encodeURIComponent(`Namaste GBM Marble Handicrafts, I would like to inquire about your marble statues, mandirs, and handicraft collection.`)
-
-  const href = `https://wa.me/${number}?text=${text}`
+export function WhatsAppButton() {
+  const phoneNumber = '919210702703'
+  const message = encodeURIComponent(
+    'Namaste GBM Marble Handicrafts! I am interested in your Makrana marble statues & home temples. Please share your catalog and details.'
+  )
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
 
   return (
     <a
-      href={href}
+      href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
+      className="fixed bottom-7 right-7 z-50 bg-[#1A1A1A] hover:bg-[#B08968] text-white p-3.5 rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center group border border-[#333]"
       aria-label="Enquire on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#25D366] hover:bg-[#20bd5a] text-white px-5 py-3.5 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 group border border-white/20"
     >
-      <MessageCircle className="w-6 h-6 fill-current animate-bounce" />
-      <span className="font-semibold text-sm hidden sm:inline-block tracking-wide">
-        Enquire on WhatsApp
+      <WhatsAppIcon className="w-5 h-5 text-white fill-current" />
+      <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-500 ease-in-out text-xs font-sans font-medium pl-0 group-hover:pl-2.5">
+        Chat on WhatsApp
       </span>
     </a>
   )

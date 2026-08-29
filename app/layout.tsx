@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Fraunces, Plus_Jakarta_Sans, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
+import { NavigationProgress } from '@/components/ui/NavigationProgress'
+import { ClickFeedback } from '@/components/ui/ClickFeedback'
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -38,6 +41,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${jakarta.variable} ${ibmMono.variable}`}>
       <body className="min-h-screen flex flex-col bg-[#F7F4EF] text-[#2B2723] antialiased font-sans selection:bg-[#A63D2F] selection:text-white">
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
+        <ClickFeedback />
         <Navbar />
         <main className="flex-1 pt-20">{children}</main>
         <Footer />

@@ -3,56 +3,62 @@
 @tailwind utilities;
 
 :root {
-  --marble-white: #F7F4EF;
-  --stone-grey: #E4DDCF;
-  --basalt: #2B2723;
-  --sandstone-red: #A63D2F;
-  --vein-gold: #B8924A;
-  --marble-vein-green: #4A5D53;
+  --warm-white: #FAF8F5;
+  --stone-subtle: #F2EFE9;
+  --charcoal: #1A1A1A;
+  --terracotta: #B08968;
+  --hairline: #E5E2DC;
 }
 
 @layer base {
   body {
-    background-color: var(--marble-white);
-    color: var(--basalt);
+    background-color: var(--warm-white);
+    color: var(--charcoal);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
+    letter-spacing: -0.01em;
   }
 
-  h1, h2, h3, h4, .font-serif {
-    font-family: 'Fraunces', Georgia, serif;
-    letter-spacing: -0.015em;
+  h1, h2 {
+    font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.01em;
   }
 }
 
-/* Hand-carved / Inset Shadow Text Effect */
-.carved-text {
-  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8), -1px -1px 1px rgba(43, 39, 35, 0.15);
-}
-
-/* Measurement Tag Style */
+/* Modern Luxury Spec Tag */
 .spec-tag {
   font-family: var(--font-ibm-mono), 'IBM Plex Mono', monospace;
-  background-color: #E4DDCF;
-  color: #2B2723;
-  border: 1px solid #D4C9B8;
-  padding: 0.25rem 0.6rem;
-  border-radius: 2px;
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
+  background-color: #F2EFE9;
+  color: #1A1A1A;
+  border: 1px solid #E5E2DC;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Subtle Hairline Border */
+.hairline-border {
+  border: 1px solid #E5E2DC;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F7F4EF;
+  background: #FAF8F5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E4DDCF;
-  border-radius: 2px;
+  background: #D8D3CA;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8924A;
+  background: #B08968;
 }

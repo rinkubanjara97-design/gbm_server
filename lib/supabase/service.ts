@@ -1,9 +1,14 @@
 import { MOCK_CATEGORIES, MOCK_PRODUCTS, MOCK_ENQUIRIES, Category, Product, Enquiry } from '@/lib/data/mock-data'
-import { createClient } from './client'
+import { createClient, createAdminClient } from './client'
+
+// In-memory deletion trackers to ensure immediate sync across fallback and database layers
+const DELETED_PRODUCT_IDS = new Set<string>()
+const DELETED_CATEGORY_IDS = new Set<string>()
 
 export async function getCategories(): Promise<Category[]> {
+  const activeMockCategories = MOCK_CATEGORIES.filter((c) => !DELETED_CATEGORY_IDS.has(c.id))
   const supabase = createClient()
-  if (!supabase) return MOCK_CATEGORIES
+  if (!supabase) return activeMockCategories
 
   try {
     const { data, error } = await supabase
@@ -12,17 +17,92 @@ export async function getCategories(): Promise<Category[]> {
       .eq('is_visible', true)
       .order('sort_order', { ascending: true })
 
-    if (error || !data || data.length === 0) return MOCK_CATEGORIES
+    if (error || !data || data.length === 0) return activeMockCategories
 
-    // Build hierarchy
-    const topLevel = data.filter((c: Category) => !c.parent_id)
+    const dbCategories = data.filter((c: Category) => !DELETED_CATEGORY_IDS.has(c.id))
+    const topLevel = dbCategories.filter((c: Category) => !c.parent_id)
     return topLevel.map((parent: Category) => ({
       ...parent,
-      children: data.filter((c: Category) => c.parent_id === parent.id),
+      children: dbCategories.filter((c: Category) => c.parent_id === parent.id),
     }))
   } catch {
-    return MOCK_CATEGORIES
+    return activeMockCategories
   }
+}
+
+export async function getAllAdminCategories(): Promise<Category[]> {
+  const activeMockCategories = MOCK_CATEGORIES.filter((c) => !DELETED_CATEGORY_IDS.has(c.id))
+  const supabase = createAdminClient() || createClient()
+  if (!supabase) return activeMockCategories
+
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('sort_order', { ascending: true })
+
+    if (error || !data || data.length === 0) return activeMockCategories
+    return data.filter((c: Category) => !DELETED_CATEGORY_IDS.has(c.id))
+  } catch {
+    return activeMockCategories
+  }
+}
+
+export async function saveCategory(category: Partial<Category>): Promise<{ success: boolean; data?: any; error?: string }> {
+  const supabase = createAdminClient() || createClient()
+  
+  const catId = category.id || `cat-new-${Date.now()}`
+  if (category.id) DELETED_CATEGORY_IDS.delete(category.id)
+
+  const updatedCategory: Category = {
+    id: catId,
+    name: category.name || 'New Category',
+    slug: category.slug || (category.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    description: category.description || '',
+    banner_image_url: category.banner_image_url || '',
+    parent_id: category.parent_id || null,
+    sort_order: category.sort_order || 0,
+    is_visible: category.is_visible !== false,
+  }
+
+  // Update in-memory categories array
+  const existingIdx = MOCK_CATEGORIES.findIndex((c) => c.id === catId || c.slug === updatedCategory.slug)
+  if (existingIdx >= 0) {
+    MOCK_CATEGORIES[existingIdx] = { ...MOCK_CATEGORIES[existingIdx], ...updatedCategory }
+  } else {
+    MOCK_CATEGORIES.unshift(updatedCategory)
+  }
+
+  if (supabase) {
+    try {
+      if (category.id && !category.id.startsWith('temp-') && !category.id.startsWith('cat-new-')) {
+        await supabase.from('categories').update(category).eq('id', category.id)
+      } else {
+        const { id, ...newCat } = category
+        await supabase.from('categories').insert([newCat])
+      }
+    } catch (err: any) {
+      console.warn('Supabase category save fallback:', err?.message)
+    }
+  }
+
+  return { success: true, data: updatedCategory }
+}
+
+export async function deleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
+  DELETED_CATEGORY_IDS.add(id)
+  MOCK_CATEGORIES = MOCK_CATEGORIES.filter((c) => c.id !== id)
+
+  const supabase = createAdminClient() || createClient()
+  if (supabase) {
+    try {
+      await supabase.from('categories').delete().eq('id', id)
+    } catch (err: any) {
+      console.warn('Supabase category delete fallback:', err?.message)
+    }
+  }
+
+  return { success: true }
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
@@ -37,48 +117,208 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   return null
 }
 
-export async function getProducts(categorySlug?: string, subCategorySlug?: string): Promise<Product[]> {
+export async function getProducts(categorySlug?: string): Promise<Product[]> {
+  const activeMockProducts = MOCK_PRODUCTS.filter((p) => !DELETED_PRODUCT_IDS.has(p.id) && p.is_published !== false)
   const supabase = createClient()
-  if (!supabase) {
-    let prods = MOCK_PRODUCTS
-    if (categorySlug) {
-      const cat = MOCK_CATEGORIES.find((c) => c.slug === categorySlug)
-      if (cat) {
-        prods = prods.filter((p) => p.category_id === cat.id || p.category_slug === categorySlug)
+
+  let allProducts = activeMockProducts
+
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, category:categories(name, slug), images:product_images(*)')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false })
+
+      if (!error && data && data.length > 0) {
+        const dbProducts: Product[] = data
+          .filter((p: any) => !DELETED_PRODUCT_IDS.has(p.id))
+          .map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            category_id: p.category_id,
+            category_name: p.category?.name || 'Handicrafts',
+            category_slug: p.category?.slug || 'handicrafts',
+            description: p.description,
+            material: p.material,
+            size: p.size,
+            finish: p.finish,
+            work_type: p.work_type,
+            price: p.price || 'Price on Request',
+            is_featured: p.is_featured,
+            is_published: p.is_published,
+            images: p.images || [],
+          }))
+
+        // Merge DB products with active mock products, giving priority to DB products
+        const dbProductIds = new Set(dbProducts.map((p) => p.id))
+        const dbProductSlugs = new Set(dbProducts.map((p) => p.slug))
+        const uniqueMockProducts = activeMockProducts.filter((p) => !dbProductIds.has(p.id) && !dbProductSlugs.has(p.slug))
+
+        allProducts = [...dbProducts, ...uniqueMockProducts]
       }
+    } catch {
+      // Fallback to activeMockProducts
     }
-    return prods
   }
+
+  if (categorySlug) {
+    allProducts = allProducts.filter((p) => p.category_slug === categorySlug)
+  }
+
+  return allProducts
+}
+
+export async function getAllAdminProducts(): Promise<Product[]> {
+  const activeMockProducts = MOCK_PRODUCTS.filter((p) => !DELETED_PRODUCT_IDS.has(p.id))
+  const supabase = createAdminClient() || createClient()
+
+  if (!supabase) return activeMockProducts
 
   try {
-    let query = supabase
+    const { data, error } = await supabase
       .from('products')
       .select('*, category:categories(name, slug), images:product_images(*)')
-      .eq('is_published', true)
-      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
 
-    const { data, error } = await query
-    if (error || !data || data.length === 0) return MOCK_PRODUCTS
+    if (error || !data || data.length === 0) return activeMockProducts
 
-    return data.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      category_id: p.category_id,
-      category_name: p.category?.name || 'Handicrafts',
-      category_slug: p.category?.slug || 'handicrafts',
-      description: p.description,
-      material: p.material,
-      size: p.size,
-      finish: p.finish,
-      work_type: p.work_type,
-      is_featured: p.is_featured,
-      is_published: p.is_published,
-      images: p.images || [],
-    }))
+    const dbProducts: Product[] = data
+      .filter((p: any) => !DELETED_PRODUCT_IDS.has(p.id))
+      .map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        category_id: p.category_id,
+        category_name: p.category?.name || 'Handicrafts',
+        category_slug: p.category?.slug || 'handicrafts',
+        description: p.description,
+        material: p.material,
+        size: p.size,
+        finish: p.finish,
+        work_type: p.work_type,
+        price: p.price || 'Price on Request',
+        is_featured: p.is_featured,
+        is_published: p.is_published,
+        images: p.images || [],
+      }))
+
+    const dbProductIds = new Set(dbProducts.map((p) => p.id))
+    const dbProductSlugs = new Set(dbProducts.map((p) => p.slug))
+    const uniqueMockProducts = activeMockProducts.filter((p) => !dbProductIds.has(p.id) && !dbProductSlugs.has(p.slug))
+
+    return [...dbProducts, ...uniqueMockProducts]
   } catch {
-    return MOCK_PRODUCTS
+    return activeMockProducts
   }
+}
+
+export async function saveProduct(
+  product: Partial<Product>,
+  images: { image_url: string; is_cover: boolean }[]
+): Promise<{ success: boolean; data?: any; error?: string }> {
+  const supabase = createAdminClient() || createClient()
+  let savedProductId = product.id || `prod-new-${Date.now()}`
+
+  if (product.id) DELETED_PRODUCT_IDS.delete(product.id)
+  DELETED_PRODUCT_IDS.delete(savedProductId)
+
+  // Find category details for correct category filtering on website
+  const categoryMatch = MOCK_CATEGORIES.find((c) => c.id === product.category_id)
+  const catName = categoryMatch?.name || product.category_name || 'Handicrafts'
+  const catSlug = categoryMatch?.slug || product.category_slug || 'handicrafts-items'
+
+  const formattedImages = images.map((img, idx) => ({
+    id: `img-${savedProductId}-${idx}`,
+    product_id: savedProductId,
+    image_url: img.image_url,
+    is_cover: img.is_cover || idx === 0,
+  }))
+
+  const fullProduct: Product = {
+    id: savedProductId,
+    name: product.name || 'New Marble Sculpture',
+    slug: product.slug || (product.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    category_id: product.category_id || 'cat-1',
+    category_name: catName,
+    category_slug: catSlug,
+    description: product.description || '',
+    material: product.material || 'Pure White Makrana Marble',
+    size: product.size || 'Standard Size',
+    finish: product.finish || 'Natural Diamond Polish',
+    work_type: product.work_type || 'Hand Relief Carving',
+    price: product.price || 'Price on Request',
+    is_featured: product.is_featured !== false,
+    is_published: product.is_published !== false,
+    images: formattedImages,
+  }
+
+  // Update in-memory MOCK_PRODUCTS
+  const existingIndex = MOCK_PRODUCTS.findIndex((p) => p.id === savedProductId || p.slug === fullProduct.slug)
+  if (existingIndex >= 0) {
+    MOCK_PRODUCTS[existingIndex] = { ...MOCK_PRODUCTS[existingIndex], ...fullProduct }
+  } else {
+    MOCK_PRODUCTS.unshift(fullProduct)
+  }
+
+  if (supabase) {
+    try {
+      const payload = {
+        name: fullProduct.name,
+        slug: fullProduct.slug,
+        category_id: fullProduct.category_id,
+        description: fullProduct.description,
+        material: fullProduct.material,
+        size: fullProduct.size,
+        finish: fullProduct.finish,
+        work_type: fullProduct.work_type,
+        price: fullProduct.price,
+        is_featured: fullProduct.is_featured,
+        is_published: fullProduct.is_published,
+      }
+
+      if (product.id && !product.id.startsWith('temp-') && !product.id.startsWith('prod-new-')) {
+        await supabase.from('products').update(payload).eq('id', product.id)
+      } else {
+        const { data } = await supabase.from('products').insert([payload]).select()
+        if (data?.[0]?.id) savedProductId = data[0].id
+      }
+
+      if (images.length > 0 && savedProductId) {
+        await supabase.from('product_images').delete().eq('product_id', savedProductId)
+        const imagePayloads = images.map((img, i) => ({
+          product_id: savedProductId,
+          image_url: img.image_url,
+          is_cover: img.is_cover || i === 0,
+          sort_order: i,
+        }))
+        await supabase.from('product_images').insert(imagePayloads)
+      }
+    } catch (err: any) {
+      console.warn('Supabase product save fallback:', err?.message)
+    }
+  }
+
+  return { success: true, data: { id: savedProductId } }
+}
+
+export async function deleteProduct(id: string): Promise<{ success: boolean; error?: string }> {
+  DELETED_PRODUCT_IDS.add(id)
+  MOCK_PRODUCTS = MOCK_PRODUCTS.filter((p) => p.id !== id)
+
+  const supabase = createAdminClient() || createClient()
+  if (supabase) {
+    try {
+      await supabase.from('product_images').delete().eq('product_id', id)
+      await supabase.from('products').delete().eq('id', id)
+    } catch (err: any) {
+      console.warn('Supabase product delete fallback:', err?.message)
+    }
+  }
+
+  return { success: true }
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
@@ -107,7 +347,6 @@ export async function submitEnquiry(enquiryData: {
 }): Promise<{ success: boolean; message: string }> {
   const supabase = createClient()
   if (!supabase) {
-    // Add to mock enquiries in memory / console for testing
     MOCK_ENQUIRIES.unshift({
       id: `enq-${Date.now()}`,
       name: enquiryData.name,
@@ -129,3 +368,111 @@ export async function submitEnquiry(enquiryData: {
     return { success: false, message: err.message || 'Failed to submit enquiry. Please call or WhatsApp us directly.' }
   }
 }
+
+export async function getEnquiries(): Promise<Enquiry[]> {
+  const supabase = createAdminClient() || createClient()
+  if (!supabase) return MOCK_ENQUIRIES
+
+  try {
+    const { data, error } = await supabase
+      .from('enquiries')
+      .select('*, product:products(name)')
+      .order('created_at', { ascending: false })
+
+    if (error || !data || data.length === 0) return MOCK_ENQUIRIES
+
+    return data.map((e: any) => ({
+      id: e.id,
+      name: e.name,
+      phone: e.phone,
+      email: e.email,
+      message: e.message,
+      product_id: e.product_id,
+      product_name: e.product?.name || 'General Inquiry',
+      is_read: e.is_read,
+      created_at: e.created_at,
+    }))
+  } catch {
+    return MOCK_ENQUIRIES
+  }
+}
+
+export async function markEnquiryRead(id: string, is_read: boolean): Promise<{ success: boolean }> {
+  const supabase = createAdminClient() || createClient()
+  if (!supabase) return { success: true }
+
+  try {
+    await supabase.from('enquiries').update({ is_read }).eq('id', id)
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
+export async function deleteEnquiry(id: string): Promise<{ success: boolean }> {
+  const supabase = createAdminClient() || createClient()
+  if (!supabase) return { success: true }
+
+  try {
+    await supabase.from('enquiries').delete().eq('id', id)
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
+export interface SiteSettings {
+  logo_image_url: string
+  hero_image_url: string
+  hero_title: string
+  hero_subtitle: string
+  hero_badge: string
+  hero_object_fit: string
+  hero_aspect_ratio: string
+  hero_bg_color: string
+  heritage_image_url: string
+}
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const defaultSettings: SiteSettings = {
+    logo_image_url: '/logo.jpg',
+    hero_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787818005/gbm-marble-handicrafts/god-statues/t3vcepigqrv49y6vq6sl.jpg',
+    hero_title: 'White Makrana Marble Lord Ganesha Statue',
+    hero_subtitle: 'Master Sculptor Creation',
+    hero_badge: 'Custom Order',
+    hero_object_fit: 'contain',
+    hero_aspect_ratio: '4/3',
+    hero_bg_color: '#F2EFE9',
+    heritage_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787817882/gbm-marble-handicrafts/carving-temple/teggufnaazs15ipmfknp.jpg',
+  }
+
+  if (typeof window === 'undefined') {
+    try {
+      const fs = eval("require('fs')")
+      const settingsPath = 'c:/Users/ajayj/Downloads/gbm/lib/data/site-settings.json'
+      if (fs.existsSync(settingsPath)) {
+        const content = fs.readFileSync(settingsPath, 'utf8')
+        return { ...defaultSettings, ...JSON.parse(content) }
+      }
+    } catch {}
+  }
+
+  return defaultSettings
+}
+
+export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise<{ success: boolean; error?: string }> {
+  if (typeof window === 'undefined') {
+    try {
+      const current = await getSiteSettings()
+      const updated = { ...current, ...settings }
+      const fs = eval("require('fs')")
+      const settingsPath = 'c:/Users/ajayj/Downloads/gbm/lib/data/site-settings.json'
+      fs.writeFileSync(settingsPath, JSON.stringify(updated, null, 2), 'utf8')
+      return { success: true }
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Failed to save site settings' }
+    }
+  }
+  return { success: false, error: 'Server side only' }
+}
+

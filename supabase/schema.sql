@@ -97,3 +97,26 @@ create policy "Admin full access on product_images" on product_images
 
 create policy "Admin full access on enquiries" on enquiries
   for all to authenticated using (true) with check (true);
+
+-- Seed Categories (19 Categories from Workspace Catalog)
+insert into categories (name, slug, description, banner_image_url, sort_order, is_visible) values
+  ('Carving Temple', 'carving-temple', 'Intricately hand-carved white marble temples featuring traditional Rajasthani stone relief work and architectural pillars.', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1200&auto=format&fit=crop', 1, true),
+  ('Carving Work', 'carving-work', 'Custom hand chisel relief stone carving work for walls, pillars, panels, and bespoke architectural elements.', 'https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1200&auto=format&fit=crop', 2, true),
+  ('Corin Temple', 'corin-temple', 'Modern Corian material backlit temples and sleek mandir designs with precision CNC cutting and glowing illumination.', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop', 3, true),
+  ('Eley Work Temple', 'eley-work-temple', 'Exquisite Pietra Dura gemstone inlay work temples adorned with semi-precious stone floral art.', 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=1200&auto=format&fit=crop', 4, true),
+  ('Fountain', 'fountain', 'Grand multi-tier carved marble fountains, water bowls, cascading waterfalls, and garden water features.', 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=1200&auto=format&fit=crop', 5, true),
+  ('God Statues', 'god-statues', 'Divine handcrafted white Makrana marble deity idols including Lord Ganesha, Shiva, Krishna, Hanuman, and Ram Darbar.', 'https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1200&auto=format&fit=crop', 6, true),
+  ('Handicrafts Items', 'handicrafts-items', 'Royal Rajasthani marble decorative items, painted minakari art, urlis, keyholders, and heritage home decor.', 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=1200&auto=format&fit=crop', 7, true),
+  ('Jali Work Temple', 'jali-work-temple', 'Lattice jali carved marble temples featuring delicate geometric and floral cutwork screening for home shrines.', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1200&auto=format&fit=crop', 8, true),
+  ('Kitchen, Bar, Restro...', 'kitchen-bar-restro', 'Luxury marble bar counters, kitchen island tops, restaurant stone tables, mortared bowls, and serving platters.', 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1200&auto=format&fit=crop', 9, true),
+  ('Marble Basin', 'marble-basin', 'Hand-turned counter-top marble wash basins, fluted sink bowls, and carved stone bathroom fixtures.', 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1200&auto=format&fit=crop', 10, true),
+  ('Marble Chhatri', 'marble-chhatri', 'Heritage Rajasthani domed marble chhatris, garden pavilions, and stone canopy structures.', 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?q=80&w=1200&auto=format&fit=crop', 11, true),
+  ('Marble Fire Place', 'marble-fire-place', 'Majestic hand-carved marble fireplace mantels, surrounds, and ornate living room hearth designs.', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop', 12, true),
+  ('Marble Jali Panel', 'marble-jali-panel', 'Custom carved marble jali screens, partition wall lattice panels, and decorative stone grills.', 'https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?q=80&w=1200&auto=format&fit=crop', 13, true),
+  ('Marble Singhasan', 'marble-singhasan', 'Royal carved marble thrones (singhasan) and raised pedestals for deity idols and pooja rooms.', 'https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1200&auto=format&fit=crop', 14, true),
+  ('Marble Table Top', 'marble-table-top', 'Custom Pietra Dura inlay and solid polished marble dining, coffee, and side table tops.', 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?q=80&w=1200&auto=format&fit=crop', 15, true),
+  ('Marble Tulsi Stand', 'marble-tulsi-stand', 'Ornate white marble Tulsi Vrindavan planters and carved stands for courtyard and balcony devotion.', 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?q=80&w=1200&auto=format&fit=crop', 16, true),
+  ('Painting Work Temple', 'painting-work-temple', 'Hand-painted Meenakari gold leaf embossed marble temples and color decorated home mandirs.', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1200&auto=format&fit=crop', 17, true),
+  ('Statue', 'statue', 'Custom human portrait statues, bust sculptures, animal statues, and artistic marble figures.', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=1200&auto=format&fit=crop', 18, true),
+  ('Vedi Temple', 'vedi-temple', 'Traditional marble havan vedi, pooja vedi temples, and sacred ritual altar structures.', 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?q=80&w=1200&auto=format&fit=crop', 19, true)
+on conflict (slug) do nothing;

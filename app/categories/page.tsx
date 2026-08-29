@@ -2,87 +2,90 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getCategories } from '@/lib/supabase/service'
-import { ArrowRight } from 'lucide-react'
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/ScrollAnimation'
+import { ArrowUpRight } from 'lucide-react'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+// Category one-liner taglines
+const CATEGORY_TAGLINES: Record<string, string> = {
+  'god-statues': 'Divine handcrafted Makrana deity idols carved with traditional precision.',
+  'carving-temple': 'Bespoke marble home shrines featuring architectural pillars and relief work.',
+  'corin-temple': 'Modern backlit CNC carved temples designed for minimalist contemporary sanctuaries.',
+  'eley-work-temple': 'Pietra Dura gemstone inlay temples adorned with semi-precious floral motifs.',
+  'fountain': 'Multi-tiered cascading marble water fountains and luxury garden fixtures.',
+  'handicrafts-items': 'Rajasthani decorative marble artifacts, urlis, and hand-painted minakari art.',
+  'jali-work-temple': 'Intricate marble lattice jali cutwork temples offering delicate light diffusion.',
+  'kitchen-bar-restro': 'Luxury custom marble countertops and architectural stone surfaces.',
+  'marble-basin': 'Sculpted countertop wash basins and fluted white marble sink bowls.',
+  'marble-chhatri': 'Heritage domed marble chhatri pavilions and garden canopy structures.',
+  'marble-fire-place': 'Classical white marble fireplace surrounds and architectural mantels.',
+  'marble-jali-panel': 'Precision lattice cutwork partition screens and decorative wall grills.',
+  'marble-singhasan': 'Royal carved marble thrones and pedestals for sacred deity idols.',
+  'marble-table-top': 'Pietra Dura stone inlay dining, coffee, and accent table tops.',
+  'marble-tulsi-stand': 'Ornate Makrana marble Tulsi Vrindavan stands for courtyard devotion.',
+  'painting-work-temple': 'Meenakari gold leaf painted marble temples and color decorated mandirs.',
+  'statue': 'Custom human portrait sculptures, artistic figures, and animal statues.',
+  'vedi-temple': 'Sacred marble havan vedi altars and traditional ritual structures.',
+  'carving-work': 'Custom hand chisel stone relief carving for architectural walls and pillars.',
+}
 
 export default async function CategoriesPage() {
   const categories = await getCategories()
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
       {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#A63D2F]">
-          Rajasthani Stone Collections
+      <FadeIn direction="up" className="text-center max-w-3xl mx-auto space-y-4">
+        <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968]">
+          Rajasthan Stone Collections
         </span>
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#2B2723]">
-          Product Categories
+        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1A1A1A]">
+          Explore All Categories
         </h1>
-        <p className="text-[#2B2723]/70 text-sm font-light">
-          Explore our portfolio of white Makrana marble deity statues, home temples, Pietra Dura inlay art, and traditional Rajasthani handicrafts.
+        <p className="text-[#555555] text-base font-light leading-relaxed">
+          Discover our complete portfolio of white Makrana marble deity idols, home temples, Pietra Dura inlay tables, fountains, and traditional Rajasthani stone art.
         </p>
-      </div>
+      </FadeIn>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {categories.map((cat) => (
-          <div
-            key={cat.id}
-            className="bg-white rounded-sm overflow-hidden border border-[#E4DDCF] flex flex-col group hover:shadow-md transition-all duration-300"
-          >
-            <Link href={`/categories/${cat.slug}`} className="relative h-60 overflow-hidden bg-[#E4DDCF]/30">
-              {cat.banner_image_url && (
-                <Image
-                  src={cat.banner_image_url}
-                  alt={cat.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2B2723]/80 via-transparent to-transparent" />
-              <div className="absolute top-3 right-3 bg-[#A63D2F] text-white text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-sm shadow-sm">
-                Hand-Carved
-              </div>
-            </Link>
-
-            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-              <div>
-                <Link href={`/categories/${cat.slug}`}>
-                  <h2 className="font-serif text-2xl font-bold text-[#2B2723] group-hover:text-[#A63D2F] transition-colors">
-                    {cat.name}
-                  </h2>
-                </Link>
-                <p className="text-[#2B2723]/70 text-xs mt-2 line-clamp-3 leading-relaxed font-light">
-                  {cat.description}
-                </p>
-
-                {cat.children && cat.children.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-[#E4DDCF] flex flex-wrap gap-1.5">
-                    {cat.children.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        href={`/categories/${sub.slug}`}
-                        className="spec-tag text-[10px] hover:bg-[#E4DDCF] transition-colors"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
+      {/* Modern Luxury Borderless Grid */}
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {categories.map((cat) => {
+          const tagline = CATEGORY_TAGLINES[cat.slug] || cat.description || `Pure Makrana white marble ${cat.name.toLowerCase()} creations.`
+          return (
+            <StaggerItem key={cat.id}>
+              <Link href={`/categories/${cat.slug}`} className="group block space-y-4">
+                <div className="relative h-80 rounded-xl overflow-hidden bg-[#F2EFE9] shadow-2xs">
+                  {cat.banner_image_url && (
+                    <Image
+                      src={cat.banner_image_url}
+                      alt={cat.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-[#1A1A1A] text-xs font-sans font-semibold px-3 py-1 rounded-md">
+                    Category #{cat.sort_order || ''}
                   </div>
-                )}
-              </div>
+                </div>
 
-              <Link
-                href={`/categories/${cat.slug}`}
-                className="inline-flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#A63D2F] group-hover:text-[#8C3125] pt-2"
-              >
-                <span>Browse {cat.name}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+                <div className="space-y-1.5">
+                  <h2 className="font-sans text-xl font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors flex items-center justify-between">
+                    {cat.name}
+                    <ArrowUpRight className="w-5 h-5 text-[#888888] group-hover:text-[#B08968] group-hover:translate-x-0.5 transition-all" />
+                  </h2>
+                  <p className="text-xs text-[#666666] font-light leading-relaxed">
+                    {tagline}
+                  </p>
+                </div>
               </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+            </StaggerItem>
+          )
+        })}
+      </StaggerContainer>
     </div>
   )
 }

@@ -1,47 +1,81 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { getCategories, getFeaturedProducts } from '@/lib/supabase/service'
+import { getCategories, getProducts, getSiteSettings } from '@/lib/supabase/service'
 import { GoogleMap } from '@/components/ui/GoogleMap'
-import { MarbleVeinPattern } from '@/components/ui/MarbleVeinPattern'
 import { ChiselIcon, StoneBlockIcon, CaliperIcon, CrateIcon } from '@/components/ui/ChiselIcons'
-import { ArrowRight, MessageCircle, Phone, ChevronRight } from 'lucide-react'
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
+import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/ScrollAnimation'
+import { ArrowRight, Phone, ArrowUpRight, Grid } from 'lucide-react'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+// Category one-liner descriptions map for high-fashion clean cards
+const CATEGORY_TAGLINES: Record<string, string> = {
+  'god-statues': 'Divine handcrafted Makrana deity idols carved with traditional precision.',
+  'carving-temple': 'Bespoke marble home shrines featuring architectural pillars and relief work.',
+  'corin-temple': 'Modern backlit CNC carved temples designed for minimalist contemporary sanctuaries.',
+  'eley-work-temple': 'Pietra Dura gemstone inlay temples adorned with semi-precious floral motifs.',
+  'fountain': 'Multi-tiered cascading marble water fountains and luxury garden fixtures.',
+  'handicrafts-items': 'Rajasthani decorative marble artifacts, urlis, and hand-painted minakari art.',
+  'jali-work-temple': 'Intricate marble lattice jali cutwork temples offering delicate light diffusion.',
+  'kitchen-bar-restro': 'Luxury custom marble countertops and architectural stone surfaces.',
+  'marble-basin': 'Sculpted countertop wash basins and fluted white marble sink bowls.',
+  'marble-chhatri': 'Heritage domed marble chhatri pavilions and garden canopy structures.',
+  'marble-fire-place': 'Classical white marble fireplace surrounds and architectural mantels.',
+  'marble-jali-panel': 'Precision lattice cutwork partition screens and decorative wall grills.',
+  'marble-singhasan': 'Royal carved marble thrones and pedestals for sacred deity idols.',
+  'marble-table-top': 'Pietra Dura stone inlay dining, coffee, and accent table tops.',
+  'marble-tulsi-stand': 'Ornate Makrana marble Tulsi Vrindavan stands for courtyard devotion.',
+  'painting-work-temple': 'Meenakari gold leaf painted marble temples and color decorated mandirs.',
+  'statue': 'Custom human portrait sculptures, artistic figures, and animal statues.',
+  'vedi-temple': 'Sacred marble havan vedi altars and traditional ritual structures.',
+  'carving-work': 'Custom hand chisel stone relief carving for architectural walls and pillars.',
+}
 
 export default async function HomePage() {
-  const categories = await getCategories()
-  const featuredProducts = await getFeaturedProducts()
+  const [categories, allProducts, siteSettings] = await Promise.all([
+    getCategories(),
+    getProducts(),
+    getSiteSettings(),
+  ])
+
+  // Group products for category-wise sections
+  const godStatues = allProducts.filter((p) => p.category_slug === 'god-statues').slice(0, 4)
+  const temples = allProducts.filter((p) => p.category_slug === 'carving-temple' || p.category_slug === 'jali-work-temple' || p.category_slug === 'corin-temple').slice(0, 4)
+  const fountainsAndBasins = allProducts.filter((p) => p.category_slug === 'fountain' || p.category_slug === 'marble-basin' || p.category_slug === 'marble-table-top').slice(0, 4)
+  const handicraftsAndArt = allProducts.filter((p) => p.category_slug === 'handicrafts-items' || p.category_slug === 'statue' || p.category_slug === 'marble-tulsi-stand').slice(0, 4)
 
   return (
-    <div className="space-y-20 pb-16">
-      {/* 1. Redesigned Split Hero Section */}
-      <section className="relative min-h-[85vh] bg-[#F7F4EF] flex items-center border-b border-[#E4DDCF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12 md:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-            {/* Left Column: Carved Typography & Sandstone Red CTAs */}
-            <div className="lg:col-span-6 space-y-6">
-              <div className="inline-flex items-center gap-2 bg-[#E4DDCF]/60 border border-[#B8924A]/40 text-[#2B2723] px-3.5 py-1.5 rounded-sm text-[11px] font-mono font-medium uppercase tracking-widest">
-                <ChiselIcon className="w-4 h-4 text-[#B8924A]" />
-                Rajasthani Stone Carving Workshop
+    <div className="space-y-28 pb-20 overflow-hidden bg-[#FAF8F5]">
+      {/* 1. Grand Modern Luxury Split Hero Section */}
+      <section className="relative min-h-[85vh] flex items-center pt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Quiet Luxury Typography */}
+            <FadeIn direction="right" duration={0.8} className="lg:col-span-6 space-y-8">
+              <div className="inline-flex items-center gap-2 bg-[#F2EFE9] text-[#1A1A1A] px-3.5 py-1.5 rounded-full text-xs font-sans font-medium tracking-tight">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B08968]" />
+                Rajasthan Heritage Stone Atelier
               </div>
 
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#2B2723] leading-[1.1] tracking-tight carved-text">
-                Carved From White <br />
-                <span className="text-[#A63D2F]">Makrana Marble</span> <br />
-                Since Generations
+              <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#1A1A1A] leading-[1.08] tracking-tight">
+                Handcrafted Pure <br />
+                <span className="italic font-serif font-normal text-[#B08968]">Makrana Marble Statues</span> <br />
+                & Heritage Mandirs
               </h1>
 
-              <p className="text-[#2B2723]/80 text-base sm:text-lg font-light leading-relaxed max-w-xl">
-                Hand-sculpted deity idols, custom home temples, Pietra Dura inlay table tops, and floating urlis crafted by master artisans in Rajasthan.
+              <p className="text-[#555555] text-base sm:text-lg font-light leading-relaxed max-w-xl">
+                Masterpiece deity idols, bespoke home temples, Pietra Dura gemstone table tops, and architectural fountains hand-carved by senior stone sculptors in Rajasthan.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
                 <Link
                   href="/categories"
-                  className="bg-[#A63D2F] hover:bg-[#8C3125] text-white font-bold px-7 py-3.5 rounded-sm text-xs uppercase tracking-widest shadow-sm transition-all flex items-center justify-center gap-2 group"
+                  className="bg-[#1A1A1A] hover:bg-[#B08968] text-white font-medium px-8 py-4 rounded-md text-sm transition-all flex items-center justify-center gap-2 group shadow-2xs"
                 >
-                  Explore Catalog
+                  Explore All 19 Categories
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
 
@@ -49,288 +83,456 @@ export default async function HomePage() {
                   href="https://wa.me/919210702703?text=Namaste%20GBM%20Marble,%20I%20am%20interested%20in%20inquiring%20about%20your%20marble%20handicrafts."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white hover:bg-[#E4DDCF]/40 border border-[#2B2723]/30 text-[#2B2723] font-semibold px-7 py-3.5 rounded-sm text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                  className="bg-white hover:bg-[#F2EFE9] border border-[#E5E2DC] text-[#1A1A1A] font-medium px-7 py-4 rounded-md text-sm transition-all flex items-center justify-center gap-2 shadow-2xs"
                 >
-                  <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                  Enquire on WhatsApp
+                  <WhatsAppIcon className="w-4 h-4 text-[#1A1A1A] fill-current" />
+                  WhatsApp Enquiry
                 </a>
               </div>
-            </div>
+            </FadeIn>
 
-            {/* Right Column: Full-Bleed Authentic Product Photo */}
-            <div className="lg:col-span-6 relative h-[380px] sm:h-[480px] lg:h-[540px] w-full rounded-sm overflow-hidden border border-[#E4DDCF] shadow-lg bg-[#E4DDCF]/30">
-              <Image
-                src="https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1200&auto=format&fit=crop"
-                alt="Master Carved White Makrana Marble Ganesha Idol"
-                fill
-                priority
-                className="object-cover object-center transition-all duration-700 hover:scale-105"
-              />
-              <div className="absolute bottom-4 left-4 right-4 bg-[#2B2723]/85 backdrop-blur-sm p-3.5 rounded-sm border border-[#B8924A]/30 text-white flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#B8924A] block">
-                    Featured Masterwork
-                  </span>
-                  <span className="font-serif text-sm font-bold text-white block">
-                    White Makrana Marble Ganesha with 24K Gold Leafing
-                  </span>
-                </div>
-                <span className="spec-tag text-[10px] bg-[#A63D2F] text-white border-0">
-                  24&quot; Height
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Signature Vein Divider */}
-      <MarbleVeinPattern className="my-6" />
-
-      {/* 2. Custom Chisel Tool Trust Strip */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white p-8 rounded-sm shadow-sm border border-[#E4DDCF]">
-          <div className="flex flex-col items-center text-center p-3 space-y-2">
-            <ChiselIcon className="w-8 h-8 text-[#B8924A]" />
-            <h4 className="font-serif font-bold text-[#2B2723] text-base">Senior Artisans</h4>
-            <p className="text-xs text-[#2B2723]/70 font-light">Hand-carved with traditional chisel tools</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3 space-y-2">
-            <StoneBlockIcon className="w-8 h-8 text-[#B8924A]" />
-            <h4 className="font-serif font-bold text-[#2B2723] text-base">Pure Makrana Marble</h4>
-            <p className="text-xs text-[#2B2723]/70 font-light">Authentic 100% white Indian stone</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3 space-y-2">
-            <CaliperIcon className="w-8 h-8 text-[#B8924A]" />
-            <h4 className="font-serif font-bold text-[#2B2723] text-base">Custom Sizing</h4>
-            <p className="text-xs text-[#2B2723]/70 font-light">Tailored for home mandirs & villas</p>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3 space-y-2">
-            <CrateIcon className="w-8 h-8 text-[#B8924A]" />
-            <h4 className="font-serif font-bold text-[#2B2723] text-base">Worldwide Export</h4>
-            <p className="text-xs text-[#2B2723]/70 font-light">Safe wooden crate door delivery</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Featured Categories Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E4DDCF] pb-4">
-          <div>
-            <span className="text-xs font-mono font-semibold uppercase tracking-widest text-[#A63D2F] block mb-1">
-              Stone Craft Collections
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#2B2723]">
-              Featured Categories
-            </h2>
-          </div>
-          <Link
-            href="/categories"
-            className="mt-3 md:mt-0 text-xs font-semibold uppercase tracking-wider text-[#A63D2F] hover:text-[#8C3125] flex items-center gap-1 transition-colors"
-          >
-            View All Categories <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.slice(0, 4).map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/categories/${cat.slug}`}
-              className="group relative h-80 rounded-sm overflow-hidden shadow-sm border border-[#E4DDCF] transition-all duration-300 hover:shadow-md"
-            >
-              {cat.banner_image_url && (
-                <Image
-                  src={cat.banner_image_url}
-                  alt={cat.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2B2723]/90 via-[#2B2723]/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                <h3 className="font-serif text-xl font-bold text-white group-hover:text-[#B8924A] transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="text-xs text-[#E4DDCF] line-clamp-2 mt-1 font-light">
-                  {cat.description}
-                </p>
-                <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono font-semibold uppercase tracking-wider text-[#B8924A] group-hover:translate-x-1 transition-transform">
-                  Explore <ArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Signature Vein Divider */}
-      <MarbleVeinPattern className="my-6" />
-
-      {/* 4. Featured Products Showcase */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E4DDCF] pb-4">
-          <div>
-            <span className="text-xs font-mono font-semibold uppercase tracking-widest text-[#A63D2F] block mb-1">
-              Hand-Carved Masterpieces
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#2B2723]">
-              Featured Marble Products
-            </h2>
-          </div>
-          <Link
-            href="/gallery"
-            className="mt-3 md:mt-0 text-xs font-semibold uppercase tracking-wider text-[#A63D2F] hover:text-[#8C3125] flex items-center gap-1"
-          >
-            Browse Full Gallery <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredProducts.map((prod) => {
-            const coverImage = prod.images.find((img) => img.is_cover)?.image_url || prod.images[0]?.image_url
-            return (
+            {/* Right Column: Full-Bleed Modern Photography Card (Un-cropped Head Guard) */}
+            <FadeIn direction="left" duration={0.8} delay={0.2} className="lg:col-span-6 relative">
               <div
-                key={prod.id}
-                className="bg-white rounded-sm overflow-hidden shadow-sm border border-[#E4DDCF] flex flex-col group hover:shadow-md transition-all duration-300"
+                className="relative h-[480px] sm:h-[560px] w-full rounded-xl overflow-hidden shadow-xs transition-all"
+                style={{ backgroundColor: siteSettings.hero_bg_color || '#F2EFE9' }}
               >
-                <Link href={`/products/${prod.slug}`} className="relative h-60 overflow-hidden bg-[#E4DDCF]/30">
-                  {coverImage && (
-                    <Image
-                      src={coverImage}
-                      alt={prod.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  )}
-                  <span className="absolute top-3 left-3 bg-[#4A5D53] text-white text-[10px] font-mono uppercase font-bold tracking-wider px-2 py-0.5 rounded-sm">
-                    {prod.work_type}
-                  </span>
-                </Link>
-
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <Image
+                  src={siteSettings.hero_image_url}
+                  alt={siteSettings.hero_title || "Handcrafted White Makrana Marble God Statue"}
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className={`${
+                    siteSettings.hero_object_fit === 'cover-top'
+                      ? 'object-cover object-top'
+                      : siteSettings.hero_object_fit === 'cover-center'
+                      ? 'object-cover object-center'
+                      : 'object-contain object-top p-4'
+                  } transition-transform duration-700 hover:scale-102`}
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1A1A1A]/90 via-[#1A1A1A]/40 to-transparent p-6 text-white flex items-end justify-between backdrop-blur-2xs">
                   <div>
-                    <span className="text-[10px] font-mono font-semibold text-[#A63D2F] uppercase tracking-wider block mb-1">
-                      {prod.category_name}
+                    <span className="text-[11px] font-sans uppercase tracking-wider text-[#B08968] font-medium block mb-1">
+                      {siteSettings.hero_subtitle}
                     </span>
-                    <Link href={`/products/${prod.slug}`}>
-                      <h3 className="font-serif text-base font-bold text-[#2B2723] group-hover:text-[#A63D2F] transition-colors line-clamp-2">
-                        {prod.name}
-                      </h3>
-                    </Link>
+                    <span className="font-serif text-lg font-bold text-white block">
+                      {siteSettings.hero_title}
+                    </span>
+                  </div>
+                  <span className="spec-tag bg-white/20 text-white border-white/30 backdrop-blur-md">
+                    {siteSettings.hero_badge}
+                  </span>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
 
-                    {/* Craftsman Spec Tag */}
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      <span className="spec-tag">{prod.material}</span>
-                      <span className="spec-tag">{prod.size}</span>
+      {/* 2. Craftsmanship Legacy Counter Bar */}
+      <section className="bg-[#1A1A1A] text-[#FAF8F5] py-12">
+        <StaggerContainer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <StaggerItem className="space-y-1">
+            <span className="font-serif text-4xl md:text-5xl font-bold text-[#B08968] block">30+</span>
+            <span className="text-xs text-[#D8D3CA] font-sans font-medium tracking-wide">Years Legacy</span>
+          </StaggerItem>
+
+          <StaggerItem className="space-y-1">
+            <span className="font-serif text-4xl md:text-5xl font-bold text-[#B08968] block">19</span>
+            <span className="text-xs text-[#D8D3CA] font-sans font-medium tracking-wide">Product Categories</span>
+          </StaggerItem>
+
+          <StaggerItem className="space-y-1">
+            <span className="font-serif text-4xl md:text-5xl font-bold text-[#B08968] block">296</span>
+            <span className="text-xs text-[#D8D3CA] font-sans font-medium tracking-wide">Portfolio Artworks</span>
+          </StaggerItem>
+
+          <StaggerItem className="space-y-1">
+            <span className="font-serif text-4xl md:text-5xl font-bold text-[#B08968] block">100%</span>
+            <span className="text-xs text-[#D8D3CA] font-sans font-medium tracking-wide">Pure Makrana Stone</span>
+          </StaggerItem>
+        </StaggerContainer>
+      </section>
+
+      {/* 3. Borderless 4-Icon Trust Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-white p-10 rounded-xl border border-[#E5E2DC]/60 shadow-2xs">
+          <StaggerItem className="flex flex-col items-center text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#F2EFE9] flex items-center justify-center text-[#B08968]">
+              <ChiselIcon className="w-6 h-6 text-[#B08968]" />
+            </div>
+            <h4 className="font-sans font-semibold text-[#1A1A1A] text-base">Senior Carvers</h4>
+            <p className="text-xs text-[#666666] font-light">Traditional hand chisel sculpting</p>
+          </StaggerItem>
+
+          <StaggerItem className="flex flex-col items-center text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#F2EFE9] flex items-center justify-center text-[#B08968]">
+              <StoneBlockIcon className="w-6 h-6 text-[#B08968]" />
+            </div>
+            <h4 className="font-sans font-semibold text-[#1A1A1A] text-base">Pure Makrana Stone</h4>
+            <p className="text-xs text-[#666666] font-light">Authentic white Indian marble</p>
+          </StaggerItem>
+
+          <StaggerItem className="flex flex-col items-center text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#F2EFE9] flex items-center justify-center text-[#B08968]">
+              <CaliperIcon className="w-6 h-6 text-[#B08968]" />
+            </div>
+            <h4 className="font-sans font-semibold text-[#1A1A1A] text-base">Custom Sizing</h4>
+            <p className="text-xs text-[#666666] font-light">Tailored for home mandirs & villas</p>
+          </StaggerItem>
+
+          <StaggerItem className="flex flex-col items-center text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-[#F2EFE9] flex items-center justify-center text-[#B08968]">
+              <CrateIcon className="w-6 h-6 text-[#B08968]" />
+            </div>
+            <h4 className="font-sans font-semibold text-[#1A1A1A] text-base">Worldwide Export</h4>
+            <p className="text-xs text-[#666666] font-light">Safe wooden crate door delivery</p>
+          </StaggerItem>
+        </StaggerContainer>
+      </section>
+
+      {/* 4. Complete 19 Categories Directory (Borderless Cards + Head-Crop Safety) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <FadeIn direction="up">
+          <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E5E2DC] pb-6">
+            <div>
+              <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
+                Rajasthan Atelier Portfolio
+              </span>
+              <h2 className="font-serif text-4xl font-bold text-[#1A1A1A]">
+                Explore All 19 Categories
+              </h2>
+            </div>
+            <Link
+              href="/categories"
+              className="mt-4 md:mt-0 text-xs font-sans font-semibold text-[#1A1A1A] hover:text-[#B08968] flex items-center gap-1.5 transition-colors"
+            >
+              <Grid className="w-4 h-4" /> Full Categories Directory <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </FadeIn>
+
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {categories.map((cat) => {
+            const tagline = CATEGORY_TAGLINES[cat.slug] || cat.description || `Pure Makrana white marble ${cat.name.toLowerCase()} creations.`
+            return (
+              <StaggerItem key={cat.id}>
+                <Link
+                  href={`/categories/${cat.slug}`}
+                  className="group block space-y-3"
+                >
+                  <div className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] shadow-2xs">
+                    {cat.banner_image_url && (
+                      <Image
+                        src={cat.banner_image_url}
+                        alt={cat.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs text-[#1A1A1A] text-[10px] font-sans font-semibold px-2.5 py-1 rounded-md">
+                      #{cat.sort_order || ''}
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-[#E4DDCF] flex items-center gap-2">
-                    <Link
-                      href={`/products/${prod.slug}`}
-                      className="flex-1 bg-[#E4DDCF]/40 hover:bg-[#E4DDCF] text-[#2B2723] text-xs font-semibold uppercase tracking-wider py-2.5 rounded-sm text-center transition-colors"
-                    >
-                      View Specs
-                    </Link>
-                    <a
-                      href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(
-                        prod.name
-                      )}"`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-[#25D366] hover:bg-[#20bd5a] text-white p-2.5 rounded-sm transition-colors"
-                      title="Enquire on WhatsApp"
-                    >
-                      <MessageCircle className="w-4 h-4 fill-current" />
-                    </a>
+                  <div className="space-y-1">
+                    <h3 className="font-sans text-lg font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors flex items-center justify-between">
+                      {cat.name}
+                      <ArrowUpRight className="w-4 h-4 text-[#888888] group-hover:text-[#B08968] group-hover:translate-x-0.5 transition-all" />
+                    </h3>
+                    <p className="text-xs text-[#666666] line-clamp-2 font-light leading-relaxed">
+                      {tagline}
+                    </p>
                   </div>
-                </div>
-              </div>
+                </Link>
+              </StaggerItem>
             )
           })}
-        </div>
+        </StaggerContainer>
       </section>
 
-      {/* 5. Our Craftsmanship Story */}
-      <section className="bg-[#2B2723] text-white py-16 border-y-2 border-[#A63D2F] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="space-y-5">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#B8924A] block">
-              Rajasthan Sculpting Heritage
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold leading-tight">
-              Carving Pure Makrana Stone with Devotion & Precision
-            </h2>
-            <p className="text-[#E4DDCF]/80 text-sm font-light leading-relaxed">
-              Based in Rajasthan, GBM Marble Handicrafts inherits centuries of master stone sculpting tradition. White Makrana marble is hand-selected for its crystal density, pure white translucency, and timeless durability.
-            </p>
-            <p className="text-[#E4DDCF]/80 text-sm font-light leading-relaxed">
-              Every idol of Lord Ganesha, Radha Krishna, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom beauty.
-            </p>
-            <div className="pt-2">
+      {/* 5. Category Showcase Sections */}
+
+      {/* Section A: God & Goddess Statues */}
+      {godStatues.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <FadeIn direction="up">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E5E2DC] pb-5">
+              <div>
+                <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
+                  Collection Showcase
+                </span>
+                <h2 className="font-serif text-3xl font-bold text-[#1A1A1A]">
+                  Divine God Statues & Idols
+                </h2>
+              </div>
               <Link
-                href="/about"
-                className="inline-flex items-center gap-2 bg-[#A63D2F] hover:bg-[#8C3125] text-white font-bold px-7 py-3 rounded-sm text-xs uppercase tracking-widest transition-all"
+                href="/categories/god-statues"
+                className="mt-4 md:mt-0 text-xs font-sans font-semibold text-[#1A1A1A] hover:text-[#B08968] flex items-center gap-1.5 transition-colors"
               >
-                Discover Our Heritage <ArrowRight className="w-4 h-4" />
+                View All Statues <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </div>
+          </FadeIn>
 
-          <div className="relative h-[380px] rounded-sm overflow-hidden border border-[#B8924A]/40 bg-stone-900">
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {godStatues.map((prod) => {
+              const coverImage = prod.images[0]?.image_url
+              return (
+                <StaggerItem key={prod.id}>
+                  <div className="group block space-y-3">
+                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                      {coverImage && (
+                        <Image
+                          src={coverImage}
+                          alt={prod.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 25vw"
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        />
+                      )}
+                    </Link>
+
+                    <div className="space-y-2">
+                      <Link href={`/products/${prod.slug}`}>
+                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                          {prod.name}
+                        </h3>
+                      </Link>
+                      <div className="flex items-center justify-between text-xs text-[#666666]">
+                        <span>{prod.material}</span>
+                        <a
+                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                        >
+                          Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </StaggerItem>
+              )
+            })}
+          </StaggerContainer>
+        </section>
+      )}
+
+      {/* Section B: Carved Temples & Shrines */}
+      {temples.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <FadeIn direction="up">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E5E2DC] pb-5">
+              <div>
+                <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
+                  Home Shrines & Shrines
+                </span>
+                <h2 className="font-serif text-3xl font-bold text-[#1A1A1A]">
+                  Carved Marble Temples & Shrines
+                </h2>
+              </div>
+              <Link
+                href="/categories/carving-temple"
+                className="mt-4 md:mt-0 text-xs font-sans font-semibold text-[#1A1A1A] hover:text-[#B08968] flex items-center gap-1.5 transition-colors"
+              >
+                View All Temples <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </FadeIn>
+
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {temples.map((prod) => {
+              const coverImage = prod.images[0]?.image_url
+              return (
+                <StaggerItem key={prod.id}>
+                  <div className="group block space-y-3">
+                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                      {coverImage && (
+                        <Image
+                          src={coverImage}
+                          alt={prod.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 25vw"
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        />
+                      )}
+                    </Link>
+
+                    <div className="space-y-2">
+                      <Link href={`/products/${prod.slug}`}>
+                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                          {prod.name}
+                        </h3>
+                      </Link>
+                      <div className="flex items-center justify-between text-xs text-[#666666]">
+                        <span>{prod.category_name}</span>
+                        <a
+                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                        >
+                          Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </StaggerItem>
+              )
+            })}
+          </StaggerContainer>
+        </section>
+      )}
+
+      {/* Section C: Fountains & Architectural Stone */}
+      {fountainsAndBasins.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <FadeIn direction="up">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E5E2DC] pb-5">
+              <div>
+                <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
+                  Architectural Features
+                </span>
+                <h2 className="font-serif text-3xl font-bold text-[#1A1A1A]">
+                  Fountains, Basins & Table Tops
+                </h2>
+              </div>
+              <Link
+                href="/categories/fountain"
+                className="mt-4 md:mt-0 text-xs font-sans font-semibold text-[#1A1A1A] hover:text-[#B08968] flex items-center gap-1.5 transition-colors"
+              >
+                Browse Fountains & Stone <ArrowUpRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </FadeIn>
+
+          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {fountainsAndBasins.map((prod) => {
+              const coverImage = prod.images[0]?.image_url
+              return (
+                <StaggerItem key={prod.id}>
+                  <div className="group block space-y-3">
+                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                      {coverImage && (
+                        <Image
+                          src={coverImage}
+                          alt={prod.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 25vw"
+                          className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                        />
+                      )}
+                    </Link>
+
+                    <div className="space-y-2">
+                      <Link href={`/products/${prod.slug}`}>
+                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                          {prod.name}
+                        </h3>
+                      </Link>
+                      <div className="flex items-center justify-between text-xs text-[#666666]">
+                        <span>{prod.category_name}</span>
+                        <a
+                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                        >
+                          Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </StaggerItem>
+              )
+            })}
+          </StaggerContainer>
+        </section>
+      )}
+
+      {/* 6. Rajasthan Sculpting Heritage Story */}
+      <section className="bg-[#1A1A1A] text-white py-24 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <FadeIn direction="right" className="space-y-6">
+            <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block">
+              Rajasthan Sculpting Heritage
+            </span>
+            <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight">
+              Carving Pure Makrana Stone with Devotion & Precision
+            </h2>
+            <p className="text-[#D8D3CA]/80 text-base font-light leading-relaxed">
+              Based in Rajasthan, GBM Marble Handicrafts inherits centuries of master stone sculpting tradition. White Makrana marble is hand-selected for its crystal density, pure white translucency, and timeless durability that never yellows over time.
+            </p>
+            <p className="text-[#D8D3CA]/80 text-base font-light leading-relaxed">
+              Every idol of Lord Ganesha, Krishna, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom beauty.
+            </p>
+            <div className="pt-4">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 bg-[#B08968] hover:bg-white hover:text-[#1A1A1A] text-white font-medium px-8 py-4 rounded-md text-sm transition-all"
+              >
+                Discover Our Atelier Story <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </FadeIn>
+
+          <FadeIn direction="left" delay={0.2} className="relative h-[440px] rounded-xl overflow-hidden bg-[#242424]">
             <Image
-              src="https://images.unsplash.com/photo-1608889175638-9322300c46e8?q=80&w=1000&auto=format&fit=crop"
-              alt="Artisan Hand Carving Marble Idol"
+              src={siteSettings.heritage_image_url}
+              alt="Artisan Hand Carving Marble Temple"
               fill
-              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover object-top"
             />
-          </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* 6. Contact & Google Map Location */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="border-b border-[#E4DDCF] pb-4">
-          <span className="text-xs font-mono font-semibold uppercase tracking-widest text-[#A63D2F] block mb-1">
-            Workshop Location
-          </span>
-          <h2 className="font-serif text-3xl font-bold text-[#2B2723]">
-            Visit Us in Rajasthan
-          </h2>
-        </div>
+      {/* 7. Workshop Location & Interactive Map */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <FadeIn direction="up">
+          <div className="border-b border-[#E5E2DC] pb-5">
+            <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
+              Atelier Location
+            </span>
+            <h2 className="font-serif text-4xl font-bold text-[#1A1A1A]">
+              Visit Us in Rajasthan
+            </h2>
+          </div>
+        </FadeIn>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <div className="bg-white p-6 rounded-sm shadow-sm border border-[#E4DDCF] space-y-5">
-            <h3 className="font-serif text-xl font-bold text-[#2B2723] border-b border-[#E4DDCF] pb-3">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+          <FadeIn direction="right" className="bg-white p-8 rounded-xl border border-[#E5E2DC]/70 shadow-2xs space-y-6">
+            <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] border-b border-[#E5E2DC] pb-4">
               GBM Marble Handicrafts
             </h3>
-            <div className="space-y-4 text-xs">
-              <div className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-[#A63D2F] shrink-0 mt-0.5" />
+            <div className="space-y-5 text-sm">
+              <div className="flex items-start gap-3.5">
+                <Phone className="w-4 h-4 text-[#B08968] shrink-0 mt-1" />
                 <div>
-                  <p className="font-bold text-[#2B2723]">Phone Lines:</p>
-                  <a href="tel:9210702703" className="font-mono text-sm text-[#A63D2F] font-bold block hover:underline">
+                  <p className="font-medium text-[#1A1A1A]">Direct Direct Line:</p>
+                  <a href="tel:9210702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
                     +91 9210702703
                   </a>
-                  <a href="tel:9785702703" className="font-mono text-sm text-[#A63D2F] font-bold block hover:underline">
+                  <a href="tel:9785702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
                     +91 9785702703
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <MessageCircle className="w-4 h-4 text-[#25D366] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-3.5">
+                <WhatsAppIcon className="w-4 h-4 text-[#1A1A1A] fill-current shrink-0 mt-1" />
                 <div>
-                  <p className="font-bold text-[#2B2723]">WhatsApp Enquiry:</p>
+                  <p className="font-medium text-[#1A1A1A]">WhatsApp Inquiry:</p>
                   <a
                     href="https://wa.me/919210702703"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mono text-xs text-[#25D366] font-bold hover:underline"
+                    className="font-mono text-xs text-[#1A1A1A] font-semibold hover:underline"
                   >
                     Chat on WhatsApp (+91 9210702703)
                   </a>
@@ -340,15 +542,15 @@ export default async function HomePage() {
 
             <Link
               href="/contact"
-              className="w-full bg-[#A63D2F] hover:bg-[#8C3125] text-white font-bold py-3 rounded-sm text-xs uppercase tracking-wider block text-center shadow-sm transition-colors"
+              className="w-full bg-[#1A1A1A] hover:bg-[#B08968] text-white font-medium py-3.5 rounded-md text-xs uppercase tracking-wider block text-center transition-colors shadow-2xs"
             >
               Send Online Inquiry
             </Link>
-          </div>
+          </FadeIn>
 
-          <div className="lg:col-span-2">
+          <FadeIn direction="left" delay={0.2} className="lg:col-span-2 rounded-xl overflow-hidden border border-[#E5E2DC] shadow-2xs">
             <GoogleMap />
-          </div>
+          </FadeIn>
         </div>
       </section>
     </div>

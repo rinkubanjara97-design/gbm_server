@@ -1,130 +1,146 @@
 'use client'
 
-import React, { useState } from 'react'
-import { MOCK_ENQUIRIES, Enquiry } from '@/lib/data/mock-data'
-import { MessageCircle, Phone, Mail, CheckCircle2, Circle, Trash2 } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Enquiry } from '@/lib/data/mock-data'
+import { getEnquiries, markEnquiryRead, deleteEnquiry } from '@/lib/supabase/service'
+import { Inbox, Phone, Mail, CheckCircle2, Trash2, Clock, MessageSquare } from 'lucide-react'
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 
 export default function AdminEnquiriesPage() {
-  const [enquiries, setEnquiries] = useState<Enquiry[]>(MOCK_ENQUIRIES)
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const toggleReadStatus = (id: string) => {
-    setEnquiries(
-      enquiries.map((e) => (e.id === id ? { ...e, is_read: !e.is_read } : e))
-    )
+  const loadEnquiries = async () => {
+    setLoading(true)
+    const data = await getEnquiries()
+    setEnquiries(data)
+    setLoading(false)
   }
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this customer enquiry?')) {
-      setEnquiries(enquiries.filter((e) => e.id !== id))
-    }
+  useEffect(() => {
+    loadEnquiries()
+  }, [])
+
+  const handleToggleRead = async (id: string, currentReadState: boolean) => {
+    await markEnquiryRead(id, !currentReadState)
+    setEnquiries((prev) => prev.map((e) => (e.id === id ? { ...e, is_read: !currentReadState } : e)))
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this enquiry?')) return
+    await deleteEnquiry(id)
+    setEnquiries((prev) => prev.filter((e) => e.id !== id))
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="font-serif text-3xl font-bold text-stone-900">Enquiries Inbox</h1>
-        <p className="text-stone-500 text-xs mt-1">
-          Review customer inquiries submitted via website contact form or product page enquiry buttons.
+      <div className="border-b border-[#E4DDCF] pb-4">
+        <h1 className="font-serif text-3xl font-bold text-[#2B2723] flex items-center gap-2">
+          <Inbox className="w-7 h-7 text-[#A63D2F]" /> Customer Enquiries Inbox
+        </h1>
+        <p className="text-xs text-[#2B2723]/60 font-mono mt-1">
+          Review customer WhatsApp & web form quote requests stored live in Supabase.
         </p>
       </div>
 
-      {/* Inbox List */}
-      <div className="space-y-4">
-        {enquiries.length === 0 ? (
-          <div className="bg-white p-12 text-center rounded-2xl border border-stone-200 text-stone-500 text-sm">
-            No customer enquiries in the inbox yet.
-          </div>
-        ) : (
-          enquiries.map((enq) => (
+      {/* Enquiries Inbox */}
+      {loading ? (
+        <div className="p-8 text-center text-xs font-mono text-[#2B2723]/60">Loading customer enquiries...</div>
+      ) : enquiries.length === 0 ? (
+        <div className="bg-white p-10 rounded-sm border border-[#E4DDCF] text-center space-y-3">
+          <MessageSquare className="w-10 h-10 text-[#B8924A] mx-auto opacity-50" />
+          <h3 className="font-serif text-lg font-bold text-[#2B2723]">No Enquiries Yet</h3>
+          <p className="text-xs text-[#2B2723]/60 font-light">Customer submissions from the contact form will appear here.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {enquiries.map((enq) => (
             <div
               key={enq.id}
-              className={`bg-white p-6 rounded-2xl shadow-sm border transition-all ${
-                !enq.is_read ? 'border-maroon-900 ring-1 ring-maroon-900/20' : 'border-stone-200'
+              className={`bg-white rounded-sm border p-6 shadow-sm transition-all ${
+                enq.is_read ? 'border-[#E4DDCF]' : 'border-l-4 border-l-[#A63D2F] border-[#E4DDCF]'
               }`}
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-100 pb-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => toggleReadStatus(enq.id)}
-                    title={enq.is_read ? 'Mark as Unread' : 'Mark as Read'}
-                    className="text-stone-400 hover:text-maroon-900 transition-colors"
-                  >
-                    {enq.is_read ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-maroon-900" />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E4DDCF] pb-3 mb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-serif font-bold text-[#2B2723] text-lg">{enq.name}</h3>
+                    {!enq.is_read && (
+                      <span className="bg-[#A63D2F] text-white text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm">
+                        New Enquiry
+                      </span>
                     )}
-                  </button>
-
-                  <div>
-                    <h3 className="font-bold text-stone-900 text-base">{enq.name}</h3>
-                    <p className="text-[11px] text-stone-400">
-                      Received: {new Date(enq.created_at).toLocaleString()}
-                    </p>
                   </div>
+                  {enq.product_name && (
+                    <span className="text-xs font-mono font-semibold text-[#A63D2F] block mt-0.5">
+                      Interested Product: {enq.product_name}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3 text-xs font-mono text-[#2B2723]/60">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-[#B8924A]" /> {new Date(enq.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[#2B2723]/80 text-sm font-light leading-relaxed bg-[#F7F4EF]/50 p-4 rounded-sm border border-[#E4DDCF]/50 mb-4">
+                &ldquo;{enq.message}&rdquo;
+              </p>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                <div className="flex flex-wrap items-center gap-4 text-xs font-mono">
+                  <a
+                    href={`tel:${enq.phone}`}
+                    className="flex items-center gap-1.5 font-bold text-[#2B2723] hover:text-[#A63D2F]"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-[#B8924A]" /> {enq.phone}
+                  </a>
+
+                  {enq.email && (
+                    <a
+                      href={`mailto:${enq.email}`}
+                      className="flex items-center gap-1.5 font-bold text-[#2B2723] hover:text-[#A63D2F]"
+                    >
+                      <Mail className="w-3.5 h-3.5 text-[#B8924A]" /> {enq.email}
+                    </a>
+                  )}
+
+                  <a
+                    href={`https://wa.me/91${enq.phone.replace(/[^0-9]/g, '')}?text=Namaste%20${encodeURIComponent(
+                      enq.name
+                    )},%20thank%20you%20for%20inquiring%20with%20GBM%20Marble%20Handicrafts.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 font-bold text-[#25D366] hover:underline"
+                  >
+                    <WhatsAppIcon className="w-4 h-4 fill-current" /> Reply on WhatsApp
+                  </a>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <a
-                    href={`https://wa.me/91${enq.phone}?text=Hi%20${encodeURIComponent(
-                      enq.name
-                    )},%20thank%20you%20for%20contacting%20GBM%20Marble%20Handicrafts%20regarding%20${encodeURIComponent(
-                      enq.product_name || 'your inquiry'
-                    )}.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all"
+                  <button
+                    onClick={() => handleToggleRead(enq.id, enq.is_read)}
+                    className="px-3 py-1.5 rounded-sm border border-[#E4DDCF] text-xs font-mono text-[#2B2723] hover:bg-[#E4DDCF]/40 flex items-center gap-1.5"
                   >
-                    <MessageCircle className="w-4 h-4 fill-current" /> Reply via WhatsApp
-                  </a>
+                    <CheckCircle2 className={`w-3.5 h-3.5 ${enq.is_read ? 'text-emerald-600' : 'text-stone-400'}`} />
+                    {enq.is_read ? 'Mark Unread' : 'Mark as Read'}
+                  </button>
 
                   <button
                     onClick={() => handleDelete(enq.id)}
-                    className="p-2 hover:bg-rose-50 text-rose-600 rounded-xl transition-colors"
-                    title="Delete Inquiry"
+                    className="px-3 py-1.5 rounded-sm border border-rose-200 bg-rose-50 text-xs font-mono text-rose-700 hover:bg-rose-100 flex items-center gap-1.5"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" /> Delete
                   </button>
                 </div>
               </div>
-
-              {/* Inquiry Content */}
-              <div className="space-y-3">
-                <p className="text-stone-700 text-sm bg-stone-50 p-4 rounded-xl leading-relaxed border border-stone-100">
-                  {enq.message}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-6 text-xs text-stone-600 pt-1">
-                  <div className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-gold-600" />
-                    <span className="font-semibold">Phone:</span>
-                    <a href={`tel:${enq.phone}`} className="text-stone-900 font-bold hover:underline">
-                      {enq.phone}
-                    </a>
-                  </div>
-
-                  {enq.email && (
-                    <div className="flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-gold-600" />
-                      <span className="font-semibold">Email:</span>
-                      <a href={`mailto:${enq.email}`} className="text-stone-900 font-bold hover:underline">
-                        {enq.email}
-                      </a>
-                    </div>
-                  )}
-
-                  {enq.product_name && (
-                    <div className="bg-maroon-50 text-maroon-900 px-3 py-1 rounded-full text-[11px] font-bold border border-maroon-200">
-                      Product Reference: {enq.product_name}
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

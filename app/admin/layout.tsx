@@ -2,9 +2,9 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FolderTree, Package, Inbox, LogOut, ExternalLink } from 'lucide-react'
-import { ChiselIcon } from '@/components/ui/ChiselIcons'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -27,8 +27,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="space-y-8">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-sm bg-[#A63D2F] border border-[#B8924A]/40 flex items-center justify-center">
-              <ChiselIcon className="w-4 h-4 text-white" />
+            <div className="relative w-9 h-9 rounded-full overflow-hidden border border-[#B8924A]/60 shadow-sm shrink-0 bg-white">
+              <Image src="/logo.jpg" alt="GBM Marble Handicrafts Logo" fill className="object-cover" />
             </div>
             <div>
               <span className="font-serif text-base font-bold text-white uppercase tracking-wider block">

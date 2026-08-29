@@ -9,7 +9,10 @@ export function ChiselIcon({ className = 'w-8 h-8 text-[#B8924A]' }: { className
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      width="32"
+      height="32"
       className={className}
+      style={{ maxWidth: '100%', maxHeight: '100%' }}
     >
       {/* Hand Chisel & Mallet Tool */}
       <path d="M14.5 4.5L19.5 9.5L11 18H6V13L14.5 4.5Z" />
@@ -29,7 +32,10 @@ export function StoneBlockIcon({ className = 'w-8 h-8 text-[#B8924A]' }: { class
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      width="32"
+      height="32"
       className={className}
+      style={{ maxWidth: '100%', maxHeight: '100%' }}
     >
       {/* Raw Marble Cube / Block */}
       <path d="M12 2L2 7L12 12L22 7L12 2Z" />
@@ -49,7 +55,10 @@ export function CaliperIcon({ className = 'w-8 h-8 text-[#B8924A]' }: { classNam
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      width="32"
+      height="32"
       className={className}
+      style={{ maxWidth: '100%', maxHeight: '100%' }}
     >
       {/* Craftsman Measuring Caliper / Compass */}
       <path d="M12 3V6" />
@@ -70,7 +79,10 @@ export function CrateIcon({ className = 'w-8 h-8 text-[#B8924A]' }: { className?
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+      width="32"
+      height="32"
       className={className}
+      style={{ maxWidth: '100%', maxHeight: '100%' }}
     >
       {/* Export Wooden Crate & Seal */}
       <rect x="3" y="4" width="18" height="16" rx="1" />

@@ -91,7 +91,10 @@ export async function saveCategory(category: Partial<Category>): Promise<{ succe
 
 export async function deleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
   DELETED_CATEGORY_IDS.add(id)
-  MOCK_CATEGORIES = MOCK_CATEGORIES.filter((c) => c.id !== id)
+  const catIdx = MOCK_CATEGORIES.findIndex((c) => c.id === id)
+  if (catIdx >= 0) {
+    MOCK_CATEGORIES.splice(catIdx, 1)
+  }
 
   const supabase = createAdminClient() || createClient()
   if (supabase) {
@@ -306,7 +309,10 @@ export async function saveProduct(
 
 export async function deleteProduct(id: string): Promise<{ success: boolean; error?: string }> {
   DELETED_PRODUCT_IDS.add(id)
-  MOCK_PRODUCTS = MOCK_PRODUCTS.filter((p) => p.id !== id)
+  const prodIdx = MOCK_PRODUCTS.findIndex((p) => p.id === id)
+  if (prodIdx >= 0) {
+    MOCK_PRODUCTS.splice(prodIdx, 1)
+  }
 
   const supabase = createAdminClient() || createClient()
   if (supabase) {
@@ -449,7 +455,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   if (typeof window === 'undefined') {
     try {
       const fs = eval("require('fs')")
-      const settingsPath = 'c:/Users/ajayj/Downloads/gbm/lib/data/site-settings.json'
+      const path = eval("require('path')")
+      const settingsPath = path.join(process.cwd(), 'lib', 'data', 'site-settings.json')
       if (fs.existsSync(settingsPath)) {
         const content = fs.readFileSync(settingsPath, 'utf8')
         return { ...defaultSettings, ...JSON.parse(content) }
@@ -466,7 +473,8 @@ export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise
       const current = await getSiteSettings()
       const updated = { ...current, ...settings }
       const fs = eval("require('fs')")
-      const settingsPath = 'c:/Users/ajayj/Downloads/gbm/lib/data/site-settings.json'
+      const path = eval("require('path')")
+      const settingsPath = path.join(process.cwd(), 'lib', 'data', 'site-settings.json')
       fs.writeFileSync(settingsPath, JSON.stringify(updated, null, 2), 'utf8')
       return { success: true }
     } catch (err: any) {

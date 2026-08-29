@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getCategoryBySlug, getProducts } from '@/lib/supabase/service'
+import { Category } from '@/lib/data/mock-data'
 import { ArrowUpRight } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 

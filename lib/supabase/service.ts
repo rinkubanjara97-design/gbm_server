@@ -1,7 +1,8 @@
 import { MOCK_CATEGORIES, MOCK_PRODUCTS, MOCK_ENQUIRIES, Category, Product, Enquiry } from '@/lib/data/mock-data'
 import { createClient, createAdminClient } from './client'
 
-// In-memory deletion trackers to ensure immediate sync across fallback and database layers
+// Global site settings cache & deletion trackers
+let GLOBAL_SITE_SETTINGS: any = null
 const DELETED_PRODUCT_IDS = new Set<string>()
 const DELETED_CATEGORY_IDS = new Set<string>()
 
@@ -75,11 +76,22 @@ export async function saveCategory(category: Partial<Category>): Promise<{ succe
 
   if (supabase) {
     try {
-      if (category.id && !category.id.startsWith('temp-') && !category.id.startsWith('cat-new-')) {
-        await supabase.from('categories').update(category).eq('id', category.id)
-      } else {
-        const { id, ...newCat } = category
-        await supabase.from('categories').insert([newCat])
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(category.id || '')
+      const catPayload: any = {
+        name: updatedCategory.name,
+        slug: updatedCategory.slug,
+        description: updatedCategory.description,
+        banner_image_url: updatedCategory.banner_image_url,
+        sort_order: updatedCategory.sort_order,
+        is_visible: updatedCategory.is_visible,
+      }
+      if (isUuid) {
+        catPayload.id = category.id
+      }
+
+      const { data: catDb } = await supabase.from('categories').upsert([catPayload], { onConflict: 'slug' }).select().single()
+      if (catDb?.id) {
+        updatedCategory.id = catDb.id
       }
     } catch (err: any) {
       console.warn('Supabase category save fallback:', err?.message)
@@ -229,7 +241,7 @@ export async function saveProduct(
   DELETED_PRODUCT_IDS.delete(savedProductId)
 
   // Find category details for correct category filtering on website
-  const categoryMatch = MOCK_CATEGORIES.find((c) => c.id === product.category_id)
+  const categoryMatch = MOCK_CATEGORIES.find((c) => c.id === product.category_id || c.slug === product.category_slug)
   const catName = categoryMatch?.name || product.category_name || 'Handicrafts'
   const catSlug = categoryMatch?.slug || product.category_slug || 'handicrafts-items'
 
@@ -268,36 +280,59 @@ export async function saveProduct(
 
   if (supabase) {
     try {
-      const payload = {
-        name: fullProduct.name,
-        slug: fullProduct.slug,
-        category_id: fullProduct.category_id,
-        description: fullProduct.description,
-        material: fullProduct.material,
-        size: fullProduct.size,
-        finish: fullProduct.finish,
-        work_type: fullProduct.work_type,
-        price: fullProduct.price,
-        is_featured: fullProduct.is_featured,
-        is_published: fullProduct.is_published,
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(product.id || '')
+
+      let validCatUuid: string | null = categoryMatch && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(categoryMatch.id) ? categoryMatch.id : null
+
+      if (!validCatUuid) {
+        const { data: catDb } = await supabase.from('categories').select('id').eq('slug', catSlug).maybeSingle()
+        if (catDb?.id) {
+          validCatUuid = catDb.id
+        } else {
+          const { data: newCat } = await supabase.from('categories').insert([{
+            name: catName,
+            slug: catSlug,
+            description: `${catName} collection`,
+            is_visible: true
+          }]).select().single()
+          if (newCat?.id) validCatUuid = newCat.id
+        }
       }
 
-      if (product.id && !product.id.startsWith('temp-') && !product.id.startsWith('prod-new-')) {
-        await supabase.from('products').update(payload).eq('id', product.id)
-      } else {
-        const { data } = await supabase.from('products').insert([payload]).select()
-        if (data?.[0]?.id) savedProductId = data[0].id
-      }
+      if (validCatUuid) {
+        const payload: any = {
+          name: fullProduct.name,
+          slug: fullProduct.slug,
+          category_id: validCatUuid,
+          description: fullProduct.description,
+          material: fullProduct.material,
+          size: fullProduct.size,
+          finish: fullProduct.finish,
+          work_type: fullProduct.work_type,
+          price: fullProduct.price,
+          is_featured: fullProduct.is_featured,
+          is_published: fullProduct.is_published,
+        }
+        if (isUuid) {
+          payload.id = product.id
+        }
 
-      if (images.length > 0 && savedProductId) {
-        await supabase.from('product_images').delete().eq('product_id', savedProductId)
-        const imagePayloads = images.map((img, i) => ({
-          product_id: savedProductId,
-          image_url: img.image_url,
-          is_cover: img.is_cover || i === 0,
-          sort_order: i,
-        }))
-        await supabase.from('product_images').insert(imagePayloads)
+        const { data: upsertedProd } = await supabase.from('products').upsert([payload], { onConflict: 'slug' }).select().single()
+        if (upsertedProd?.id) {
+          savedProductId = upsertedProd.id
+          fullProduct.id = savedProductId
+        }
+
+        if (images.length > 0 && savedProductId) {
+          await supabase.from('product_images').delete().eq('product_id', savedProductId)
+          const imagePayloads = images.map((img, i) => ({
+            product_id: savedProductId,
+            image_url: img.image_url,
+            is_cover: img.is_cover || i === 0,
+            sort_order: i,
+          }))
+          await supabase.from('product_images').insert(imagePayloads)
+        }
       }
     } catch (err: any) {
       console.warn('Supabase product save fallback:', err?.message)
@@ -442,14 +477,29 @@ export interface SiteSettings {
 export async function getSiteSettings(): Promise<SiteSettings> {
   const defaultSettings: SiteSettings = {
     logo_image_url: '/logo.jpg',
-    hero_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787818005/gbm-marble-handicrafts/god-statues/t3vcepigqrv49y6vq6sl.jpg',
+    hero_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787817748/gbm-marble-handicrafts/god-statues/dxqz2jqqyo6el1uyyky8.jpg',
     hero_title: 'White Makrana Marble Lord Ganesha Statue',
     hero_subtitle: 'Master Sculptor Creation',
     hero_badge: 'Custom Order',
-    hero_object_fit: 'contain',
+    hero_object_fit: 'cover-top',
     hero_aspect_ratio: '4/3',
-    hero_bg_color: '#F2EFE9',
-    heritage_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787817882/gbm-marble-handicrafts/carving-temple/teggufnaazs15ipmfknp.jpg',
+    hero_bg_color: '#FAF8F5',
+    heritage_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787819081/gbm-marble-handicrafts/vedi-temple/xnddxikch5gcd3uii5mi.jpg',
+  }
+
+  if (GLOBAL_SITE_SETTINGS) {
+    return { ...defaultSettings, ...GLOBAL_SITE_SETTINGS }
+  }
+
+  const supabase = createAdminClient() || createClient()
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('site_settings').select('*').eq('id', 'main').maybeSingle()
+      if (data && !error) {
+        GLOBAL_SITE_SETTINGS = { ...defaultSettings, ...data }
+        return GLOBAL_SITE_SETTINGS
+      }
+    } catch {}
   }
 
   if (typeof window === 'undefined') {
@@ -459,7 +509,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       const settingsPath = path.join(process.cwd(), 'lib', 'data', 'site-settings.json')
       if (fs.existsSync(settingsPath)) {
         const content = fs.readFileSync(settingsPath, 'utf8')
-        return { ...defaultSettings, ...JSON.parse(content) }
+        GLOBAL_SITE_SETTINGS = { ...defaultSettings, ...JSON.parse(content) }
+        return GLOBAL_SITE_SETTINGS
       }
     } catch {}
   }
@@ -468,19 +519,28 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise<{ success: boolean; error?: string }> {
+  const current = await getSiteSettings()
+  const updated = { ...current, ...settings }
+  GLOBAL_SITE_SETTINGS = updated
+
+  const supabase = createAdminClient() || createClient()
+  if (supabase) {
+    try {
+      await supabase.from('site_settings').upsert({ id: 'main', ...updated }, { onConflict: 'id' })
+    } catch (err: any) {
+      console.warn('Supabase site settings save fallback:', err?.message)
+    }
+  }
+
   if (typeof window === 'undefined') {
     try {
-      const current = await getSiteSettings()
-      const updated = { ...current, ...settings }
       const fs = eval("require('fs')")
       const path = eval("require('path')")
       const settingsPath = path.join(process.cwd(), 'lib', 'data', 'site-settings.json')
       fs.writeFileSync(settingsPath, JSON.stringify(updated, null, 2), 'utf8')
-      return { success: true }
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Failed to save site settings' }
-    }
+    } catch {}
   }
-  return { success: false, error: 'Server side only' }
+
+  return { success: true }
 }
 

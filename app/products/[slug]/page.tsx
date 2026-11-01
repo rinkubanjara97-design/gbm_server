@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProductBySlug, getRelatedProducts } from '@/lib/supabase/service'
 import { ProductGallery } from '@/components/product/ProductGallery'
+import { RelatedProductsGrid } from '@/components/product/RelatedProductsGrid'
 import { Phone, ShieldCheck, Truck, ChevronRight } from 'lucide-react'
 import { ChiselIcon } from '@/components/ui/ChiselIcons'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
-import Image from 'next/image'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -23,10 +23,12 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     notFound()
   }
 
-  const relatedProducts = await getRelatedProducts(product.category_id, product.id)
+  const relatedProducts = await getRelatedProducts(product.category_id, product.id, product.category_slug)
+
+  const coverImg = product.images.find((i) => i.is_cover)?.image_url || product.images[0]?.image_url || ''
 
   const whatsappMessage = encodeURIComponent(
-    `Namaste GBM Marble Handicrafts, I am interested in inquiring about "${product.name}" (Material: ${product.material}, Size: ${product.size}, Price: ${product.price || 'Price on Request'}). Please share details.`
+    `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${product.name}\n🖼️ Photo: ${coverImg}\n💎 Material: ${product.material}\n📏 Size: ${product.size}\n🏷️ Price: ${product.price || 'Price on Request'}\n\nPlease share details.`
   )
   const whatsappUrl = `https://wa.me/919210702703?text=${whatsappMessage}`
 
@@ -134,35 +136,13 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
       </div>
 
-      {/* Related Products */}
+      {/* Related Products Section with Load More */}
       {relatedProducts.length > 0 && (
         <section className="space-y-8 pt-8 border-t border-[#E5E2DC]">
           <h2 className="font-serif text-2xl font-bold text-[#1A1A1A]">
             Related Sculptures & Artworks
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedProducts.map((rel) => {
-              const relImg = rel.images[0]?.image_url
-              return (
-                <Link key={rel.id} href={`/products/${rel.slug}`} className="group block space-y-2">
-                  <div className="relative h-60 rounded-xl overflow-hidden bg-[#F2EFE9] shadow-2xs">
-                    {relImg && (
-                      <Image
-                        src={relImg}
-                        alt={rel.name}
-                        fill
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
-                  </div>
-                  <h3 className="font-sans text-sm font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors truncate">
-                    {rel.name}
-                  </h3>
-                  <p className="text-xs text-[#888888]">{rel.material}</p>
-                </Link>
-              )
-            })}
-          </div>
+          <RelatedProductsGrid products={relatedProducts} />
         </section>
       )}
     </div>

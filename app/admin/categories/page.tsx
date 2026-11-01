@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Category } from '@/lib/data/mock-data'
-import { getAllAdminCategories, saveCategory, deleteCategory } from '@/lib/supabase/service'
 import { Plus, Edit2, Trash2, FolderTree, Save, X, Eye, EyeOff } from 'lucide-react'
+import { ImagePicker } from '@/components/ui/ImagePicker'
 
 export default function AdminCategoriesPage() {
+  const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null)
@@ -16,9 +18,15 @@ export default function AdminCategoriesPage() {
 
   const loadCategories = async () => {
     setLoading(true)
-    const data = await getAllAdminCategories()
-    setCategories(data)
-    setLoading(false)
+    try {
+      const res = await fetch('/api/admin/categories')
+      const data = await res.json()
+      setCategories(Array.isArray(data) ? data : [])
+    } catch {
+      setCategories([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -53,25 +61,42 @@ export default function AdminCategoriesPage() {
     const slug = editingCategory.slug || editingCategory.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     const payload = { ...editingCategory, slug }
 
-    const res = await saveCategory(payload)
-    setSaveLoading(false)
+    try {
+      const res = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
 
-    if (res.success) {
-      setMessage({ type: 'success', text: 'Category saved successfully!' })
-      setIsModalOpen(false)
-      loadCategories()
-    } else {
-      setMessage({ type: 'error', text: res.error || 'Failed to save category.' })
+      if (data.success) {
+        setMessage({ type: 'success', text: 'Category saved live successfully!' })
+        setIsModalOpen(false)
+        await loadCategories()
+        router.refresh()
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Failed to save category.' })
+      }
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Network error' })
+    } finally {
+      setSaveLoading(false)
     }
   }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this category?')) return
-    const res = await deleteCategory(id)
-    if (res.success) {
-      loadCategories()
-    } else {
-      alert(res.error || 'Failed to delete category')
+    try {
+      const res = await fetch(`/api/admin/categories?id=${id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (data.success) {
+        await loadCategories()
+        router.refresh()
+      } else {
+        alert(data.error || 'Failed to delete category')
+      }
+    } catch (err: any) {
+      alert(err.message)
     }
   }
 
@@ -84,7 +109,7 @@ export default function AdminCategoriesPage() {
             <FolderTree className="w-7 h-7 text-[#A63D2F]" /> Category Management
           </h1>
           <p className="text-xs text-[#2B2723]/60 font-mono mt-1">
-            Manage product categories and sub-categories in Supabase database.
+            Manage product categories and sub-categories. Changes reflect live on site immediately.
           </p>
         </div>
 
@@ -204,15 +229,11 @@ export default function AdminCategoriesPage() {
               </div>
 
               <div>
-                <label className="block font-mono font-bold uppercase tracking-wider text-[#2B2723] mb-1">
-                  Banner Image URL (Cloudinary / Unsplash)
-                </label>
-                <input
-                  type="url"
+                <ImagePicker
                   value={editingCategory.banner_image_url || ''}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, banner_image_url: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3.5 py-2.5 rounded-sm border border-[#E4DDCF] text-sm focus:outline-none focus:ring-1 focus:ring-[#A63D2F]"
+                  onChange={(url) => setEditingCategory({ ...editingCategory, banner_image_url: url })}
+                  label="Category Banner Photo"
+                  placeholder="Choose device photo or Cloudinary gallery photo..."
                 />
               </div>
 

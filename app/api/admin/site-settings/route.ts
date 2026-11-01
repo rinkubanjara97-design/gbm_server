@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSiteSettings, saveSiteSettings } from '@/lib/supabase/service'
+import { revalidatePath } from 'next/cache'
 
 export async function GET() {
   const settings = await getSiteSettings()
@@ -11,6 +12,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const result = await saveSiteSettings(body)
     if (result.success) {
+      // Instantly purge Next.js server cache for all routes
+      revalidatePath('/', 'layout')
+      revalidatePath('/admin/site-settings')
       return NextResponse.json({ success: true })
     }
     return NextResponse.json({ success: false, error: result.error }, { status: 400 })

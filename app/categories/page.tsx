@@ -50,13 +50,13 @@ export default async function CategoriesPage() {
       </FadeIn>
 
       {/* Modern Luxury Borderless Grid */}
-      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <StaggerContainer className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-10">
         {categories.map((cat) => {
           const tagline = CATEGORY_TAGLINES[cat.slug] || cat.description || `Pure Makrana white marble ${cat.name.toLowerCase()} creations.`
           return (
             <StaggerItem key={cat.id}>
-              <Link href={`/categories/${cat.slug}`} className="group block space-y-4">
-                <div className="relative h-80 rounded-xl overflow-hidden bg-[#F2EFE9] shadow-2xs">
+              <Link href={`/categories/${cat.slug}`} className="group block space-y-3">
+                <div className="relative h-44 sm:h-80 rounded-xl overflow-hidden bg-[#F2EFE9] shadow-2xs">
                   {cat.banner_image_url && (
                     <Image
                       src={cat.banner_image_url}

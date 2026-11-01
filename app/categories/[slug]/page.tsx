@@ -4,8 +4,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getCategoryBySlug, getProducts } from '@/lib/supabase/service'
 import { Category } from '@/lib/data/mock-data'
-import { ArrowUpRight } from 'lucide-react'
-import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
+import { CategoryProductGrid } from '@/components/product/CategoryProductGrid'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -71,68 +70,8 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
           </div>
         )}
 
-        {/* Product Grid */}
-        {products.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-xl border border-[#E5E2DC] p-8 space-y-4 shadow-2xs max-w-2xl mx-auto">
-            <h3 className="font-serif text-2xl font-bold text-[#1A1A1A]">
-              Custom Order Sculpting Available
-            </h3>
-            <p className="text-[#555555] text-sm font-light leading-relaxed">
-              We carve custom {category.name} to order according to your exact architectural dimensions and specifications.
-            </p>
-            <div className="pt-2">
-              <a
-                href="https://wa.me/919210702703"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#1A1A1A] hover:bg-[#B08968] text-white px-6 py-3.5 rounded-md text-xs font-medium uppercase tracking-wider transition-colors shadow-2xs"
-              >
-                <WhatsAppIcon className="w-4 h-4 text-white fill-current" /> Enquire via WhatsApp
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((prod) => {
-              const coverImg = prod.images.find((i: any) => i.is_cover)?.image_url || prod.images[0]?.image_url
-              return (
-                <div key={prod.id} className="group block space-y-3">
-                  <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-xl overflow-hidden bg-[#F2EFE9] block shadow-2xs">
-                    {coverImg && (
-                      <Image
-                        src={coverImg}
-                        alt={prod.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                      />
-                    )}
-                  </Link>
-
-                  <div className="space-y-2">
-                    <Link href={`/products/${prod.slug}`}>
-                      <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1 flex items-center justify-between">
-                        {prod.name}
-                        <ArrowUpRight className="w-4 h-4 text-[#888888] group-hover:text-[#B08968] transition-colors" />
-                      </h3>
-                    </Link>
-                    <div className="flex items-center justify-between text-xs text-[#666666]">
-                      <span>{prod.material}</span>
-                      <a
-                        href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
-                      >
-                        Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
+        {/* Interactive Category Product Grid with +8 Load More */}
+        <CategoryProductGrid products={products} categoryName={category.name} />
       </div>
     </div>
   )

@@ -20,7 +20,7 @@ export function NavigationProgress() {
       }, 300)
       return () => clearTimeout(timer)
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParams, isLoading])
 
   // Intercept click on internal links to start progress bar instantly
   useEffect(() => {
@@ -76,7 +76,6 @@ export function NavigationProgress() {
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 90) return prev
-        // Slow down as progress approaches 90%
         const diff = (90 - prev) * 0.15
         return Math.min(90, prev + Math.max(diff, 1))
       })
@@ -88,27 +87,23 @@ export function NavigationProgress() {
   return (
     <AnimatePresence>
       {isLoading && (
-        <div className="fixed top-0 left-0 right-0 z-[99999] pointer-events-none">
+        <div className="fixed inset-0 z-[99999] pointer-events-none flex items-center justify-center">
           {/* Top Progress Bar */}
           <motion.div
             initial={{ width: '0%', opacity: 1 }}
             animate={{ width: `${progress}%`, opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.25 }} }
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
             transition={{ ease: 'easeOut', duration: 0.2 }}
-            className="h-[3px] bg-gradient-to-r from-[#B08968] via-[#D4AF37] to-[#A63D2F] shadow-[0_0_12px_rgba(212,175,55,0.8)]"
+            className="fixed top-0 left-0 right-0 h-[3px] bg-[#1A1A1A] shadow-xs"
           />
 
-          {/* Corner Pulse Indicator */}
+          {/* Centered Pure Circle Spinner */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-3 right-4 flex items-center gap-2 bg-[#FAF8F5]/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#E5E2DC] shadow-md z-[99999]"
           >
-            <div className="w-2 h-2 rounded-full bg-[#B08968] animate-ping" />
-            <span className="text-[11px] font-mono tracking-wider uppercase text-[#1A1A1A]">
-              Loading...
-            </span>
+            <div className="w-10 h-10 border-3 border-[#E5E2DC] border-t-[#1A1A1A] rounded-full animate-spin" />
           </motion.div>
         </div>
       )}

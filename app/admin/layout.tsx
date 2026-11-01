@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FolderTree, Package, Inbox, LogOut, ExternalLink } from 'lucide-react'
+import { LayoutDashboard, FolderTree, Package, Inbox, ScanSearch, LogOut, ExternalLink } from 'lucide-react'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -18,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Categories', href: '/admin/categories', icon: FolderTree },
     { name: 'Products', href: '/admin/products', icon: Package },
     { name: 'Enquiries Inbox', href: '/admin/enquiries', icon: Inbox },
+    { name: 'Watermark Scanner', href: '/admin/watermark-scanner', icon: ScanSearch },
   ]
 
   return (

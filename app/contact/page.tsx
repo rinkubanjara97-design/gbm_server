@@ -1,7 +1,7 @@
 import React from 'react'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { GoogleMap } from '@/components/ui/GoogleMap'
-import { Phone, Mail, MapPin, Globe } from 'lucide-react'
+import { Phone, Mail, MapPin, Globe, ExternalLink } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 
 export default function ContactPage() {
@@ -35,30 +35,42 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4 text-[#B08968]" />
                 </div>
                 <div>
-                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">Phone Lines</p>
+                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">Direct Calling Lines</p>
                   <a href="tel:9210702703" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
                     +91 9210702703
                   </a>
-                  <a href="tel:9785702703" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
-                    +91 9785702703
+                  <a href="tel:9664258577" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
+                    +91 9664258577
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#F2EFE9] flex items-center justify-center shrink-0">
-                  <WhatsAppIcon className="w-4 h-4 text-[#1A1A1A] fill-current" />
+                <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                  <WhatsAppIcon className="w-4 h-4 text-[#25D366] fill-current" />
                 </div>
                 <div>
-                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">WhatsApp Enquiry</p>
-                  <a
-                    href="https://wa.me/919210702703"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors"
-                  >
-                    +91 9210702703
-                  </a>
+                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">WhatsApp Chat Lines</p>
+                  <div className="space-y-1">
+                    <a
+                      href="https://wa.me/919210702703?text=Namaste%20GBM%20Marble,%20I%20have%20an%20inquiry."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono font-bold text-[#1A1A1A] hover:text-[#25D366] flex items-center gap-1.5 text-sm transition-colors"
+                    >
+                      <span>Line 1: +91 9210702703</span>
+                      <span className="text-[10px] font-sans font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Chat</span>
+                    </a>
+                    <a
+                      href="https://wa.me/919664258577?text=Namaste%20GBM%20Marble,%20I%20have%20an%20inquiry."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono font-bold text-[#1A1A1A] hover:text-[#25D366] flex items-center gap-1.5 text-sm transition-colors"
+                    >
+                      <span>Line 2: +91 9664258577</span>
+                      <span className="text-[10px] font-sans font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Chat</span>
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -82,10 +94,19 @@ export default function ContactPage() {
                   <MapPin className="w-4 h-4 text-[#1A1A1A]" />
                 </div>
                 <div>
-                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">Workshop Location</p>
-                  <p className="font-medium text-[#1A1A1A] text-sm">
-                    GBM Marble Handicrafts, Near Marble Market, Makrana Road, Rajasthan, India - 305801
+                  <p className="font-sans text-xs text-[#888888] font-medium uppercase tracking-wider mb-1">Workshop & Showroom Location</p>
+                  <p className="font-medium text-[#1A1A1A] text-sm leading-relaxed">
+                    Sher Singh Complex, Opp. Pillar No-40, Dadri Road, Barola, Sector-49, Noida, Uttar Pradesh - 201301
                   </p>
+                  <a
+                    href="https://maps.app.goo.gl/D5aLdbw6dZfESYSi6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[#B08968] hover:text-[#1A1A1A] font-medium mt-2 transition-colors"
+                  >
+                    <span>View on Google Maps</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
             </div>

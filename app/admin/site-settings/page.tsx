@@ -3,9 +3,12 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, Save, Sparkles, CheckCircle2, Image as ImageIcon, Crop, Sliders, Palette, Lightbulb, Wand2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Save, Sparkles, CheckCircle2, Image as ImageIcon, Crop, Palette, Lightbulb, Wand2 } from 'lucide-react'
+import { ImagePicker } from '@/components/ui/ImagePicker'
 
 export default function AdminSiteSettingsPage() {
+  const router = useRouter()
   const [settings, setSettings] = useState({
     logo_image_url: '/logo.jpg',
     hero_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787818005/gbm-marble-handicrafts/god-statues/t3vcepigqrv49y6vq6sl.jpg',
@@ -45,7 +48,8 @@ export default function AdminSiteSettingsPage() {
         body: JSON.stringify(settings),
       })
       if (res.ok) {
-        setSuccessMsg('Hero photo, crop settings, and site media updated live successfully!')
+        setSuccessMsg('All site settings, hero photo, and crop settings updated live!')
+        router.refresh()
       }
     } catch (err) {
       console.error(err)
@@ -78,13 +82,13 @@ export default function AdminSiteSettingsPage() {
             Homepage Hero Photo, Crop & Media Control
           </h1>
           <p className="text-xs text-[#666666] font-light mt-1">
-            Adjust photo cropping, statue head alignment, container backdrop, and site logo live across the website.
+            Upload from device or pick photos from Cloudinary gallery. All changes save live across the site immediately.
           </p>
         </div>
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-sans flex items-center gap-2">
+        <div className="p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-sans flex items-center gap-2 shadow-2xs">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -138,13 +142,13 @@ export default function AdminSiteSettingsPage() {
               </div>
             </div>
 
-            {/* Photo Crop & Framing Controls */}
+            {/* Photo Picker & Framing Controls */}
             <div className="lg:col-span-7 space-y-5">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-sans font-semibold text-[#1A1A1A]">
-                    Hero Photo Cloudinary URL *
-                  </label>
+                  <span className="text-xs font-sans font-semibold text-[#1A1A1A]">
+                    Hero Photo Selection
+                  </span>
                   <button
                     type="button"
                     onClick={applyCloudinaryTopFocus}
@@ -153,13 +157,12 @@ export default function AdminSiteSettingsPage() {
                     <Wand2 className="w-3.5 h-3.5" /> Auto HD Sharpen
                   </button>
                 </div>
-                <input
-                  type="text"
-                  required
+                
+                <ImagePicker
                   value={settings.hero_image_url}
-                  onChange={(e) => setSettings({ ...settings, hero_image_url: e.target.value })}
-                  placeholder="https://res.cloudinary.com/..."
-                  className="w-full px-4 py-3 rounded-md border border-[#E5E2DC] text-xs focus:outline-none focus:border-[#1A1A1A] bg-[#FAF8F5]"
+                  onChange={(url) => setSettings({ ...settings, hero_image_url: url })}
+                  label=""
+                  placeholder="Choose device photo or Cloudinary gallery photo..."
                 />
               </div>
 
@@ -215,7 +218,7 @@ export default function AdminSiteSettingsPage() {
                 <label className="block text-xs font-sans font-semibold text-[#1A1A1A] mb-2 flex items-center gap-1.5">
                   <Palette className="w-3.5 h-3.5 text-[#B08968]" /> Container Backdrop Color Presets
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   {[
                     { label: 'Soft Stone', hex: '#F2EFE9' },
                     { label: 'Warm Off-White', hex: '#FAF8F5' },
@@ -296,8 +299,8 @@ export default function AdminSiteSettingsPage() {
               <p className="font-light">Use <strong>Full View (Contain)</strong> mode for deity idols so crown/mukut is 100% visible, or select <strong>Head / Top Focus</strong> mode.</p>
             </div>
             <div className="space-y-1">
-              <span className="font-semibold text-[#1A1A1A] block">3. Cloudinary HD Auto-Sharpen</span>
-              <p className="font-light">Click &ldquo;Auto HD Sharpen&rdquo; above to automatically add <code>q_auto:best,f_auto</code> for fast WebP loading with zero blur!</p>
+              <span className="font-semibold text-[#1A1A1A] block">3. Dual Photo Selection</span>
+              <p className="font-light">Click &ldquo;Choose from Device&rdquo; to upload directly from phone/laptop, or &ldquo;Pick from Cloudinary Gallery&rdquo; to reuse any existing photo!</p>
             </div>
           </div>
         </div>
@@ -311,27 +314,12 @@ export default function AdminSiteSettingsPage() {
             <span className="text-[11px] text-[#888888]">Navbar & Footer Logo</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-            <div className="sm:col-span-3 flex justify-center">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border border-[#E5E2DC] bg-[#FAF8F5] p-1 shadow-2xs">
-                {settings.logo_image_url && (
-                  <Image src={settings.logo_image_url} alt="Site Logo Preview" fill className="object-cover rounded-full" />
-                )}
-              </div>
-            </div>
-            <div className="sm:col-span-9 space-y-2">
-              <label className="block text-xs font-sans font-semibold text-[#1A1A1A]">
-                Logo Image URL
-              </label>
-              <input
-                type="text"
-                value={settings.logo_image_url}
-                onChange={(e) => setSettings({ ...settings, logo_image_url: e.target.value })}
-                placeholder="/logo.jpg or Cloudinary Image URL"
-                className="w-full px-4 py-3 rounded-md border border-[#E5E2DC] text-xs focus:outline-none focus:border-[#1A1A1A] bg-[#FAF8F5]"
-              />
-            </div>
-          </div>
+          <ImagePicker
+            value={settings.logo_image_url}
+            onChange={(url) => setSettings({ ...settings, logo_image_url: url })}
+            label="Logo Photo Selector"
+            placeholder="/logo.jpg or upload logo from device"
+          />
         </div>
 
         {/* 4. Homepage Heritage Story Photo */}
@@ -343,25 +331,12 @@ export default function AdminSiteSettingsPage() {
             <span className="text-[11px] text-[#888888]">Background Photo in Heritage Section</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-            <div className="sm:col-span-4 relative h-36 rounded-lg overflow-hidden border border-[#E5E2DC] bg-[#FAF8F5]">
-              {settings.heritage_image_url && (
-                <Image src={settings.heritage_image_url} alt="Heritage Story Preview" fill className="object-cover object-top" />
-              )}
-            </div>
-            <div className="sm:col-span-8 space-y-2">
-              <label className="block text-xs font-sans font-semibold text-[#1A1A1A]">
-                Heritage Story Photo Cloudinary URL
-              </label>
-              <input
-                type="text"
-                value={settings.heritage_image_url}
-                onChange={(e) => setSettings({ ...settings, heritage_image_url: e.target.value })}
-                placeholder="https://res.cloudinary.com/..."
-                className="w-full px-4 py-3 rounded-md border border-[#E5E2DC] text-xs focus:outline-none focus:border-[#1A1A1A] bg-[#FAF8F5]"
-              />
-            </div>
-          </div>
+          <ImagePicker
+            value={settings.heritage_image_url}
+            onChange={(url) => setSettings({ ...settings, heritage_image_url: url })}
+            label="Heritage Section Feature Photo"
+            placeholder="Select workshop / sculpting photo from device or gallery"
+          />
         </div>
 
         {/* Action Button */}

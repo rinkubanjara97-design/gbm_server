@@ -6,7 +6,78 @@ let GLOBAL_SITE_SETTINGS: any = null
 const DELETED_PRODUCT_IDS = new Set<string>()
 const DELETED_CATEGORY_IDS = new Set<string>()
 
+function loadProductsFromFile() {
+  if (typeof window === 'undefined') {
+    try {
+      const fs = eval("require('fs')")
+      const path = eval("require('path')")
+      const pPath = path.join(process.cwd(), 'lib', 'data', 'products.json')
+      if (fs.existsSync(pPath)) {
+        const content = fs.readFileSync(pPath, 'utf8')
+        const fileData = JSON.parse(content)
+        if (Array.isArray(fileData) && fileData.length > 0) {
+          fileData.forEach((p: Product) => {
+            const idx = MOCK_PRODUCTS.findIndex((mp) => mp.id === p.id || mp.slug === p.slug)
+            if (idx >= 0) {
+              MOCK_PRODUCTS[idx] = { ...MOCK_PRODUCTS[idx], ...p }
+            } else {
+              MOCK_PRODUCTS.unshift(p)
+            }
+          })
+        }
+      }
+    } catch {}
+  }
+}
+
+function saveProductsToFile() {
+  if (typeof window === 'undefined') {
+    try {
+      const fs = eval("require('fs')")
+      const path = eval("require('path')")
+      const pPath = path.join(process.cwd(), 'lib', 'data', 'products.json')
+      fs.writeFileSync(pPath, JSON.stringify(MOCK_PRODUCTS, null, 2), 'utf8')
+    } catch {}
+  }
+}
+
+function loadCategoriesFromFile() {
+  if (typeof window === 'undefined') {
+    try {
+      const fs = eval("require('fs')")
+      const path = eval("require('path')")
+      const cPath = path.join(process.cwd(), 'lib', 'data', 'categories.json')
+      if (fs.existsSync(cPath)) {
+        const content = fs.readFileSync(cPath, 'utf8')
+        const fileData = JSON.parse(content)
+        if (Array.isArray(fileData) && fileData.length > 0) {
+          fileData.forEach((c: Category) => {
+            const idx = MOCK_CATEGORIES.findIndex((mc) => mc.id === c.id || mc.slug === c.slug)
+            if (idx >= 0) {
+              MOCK_CATEGORIES[idx] = { ...MOCK_CATEGORIES[idx], ...c }
+            } else {
+              MOCK_CATEGORIES.unshift(c)
+            }
+          })
+        }
+      }
+    } catch {}
+  }
+}
+
+function saveCategoriesToFile() {
+  if (typeof window === 'undefined') {
+    try {
+      const fs = eval("require('fs')")
+      const path = eval("require('path')")
+      const cPath = path.join(process.cwd(), 'lib', 'data', 'categories.json')
+      fs.writeFileSync(cPath, JSON.stringify(MOCK_CATEGORIES, null, 2), 'utf8')
+    } catch {}
+  }
+}
+
 export async function getCategories(): Promise<Category[]> {
+  loadCategoriesFromFile()
   const activeMockCategories = MOCK_CATEGORIES.filter((c) => !DELETED_CATEGORY_IDS.has(c.id))
   const supabase = createClient()
   if (!supabase) return activeMockCategories
@@ -21,10 +92,23 @@ export async function getCategories(): Promise<Category[]> {
     if (error || !data || data.length === 0) return activeMockCategories
 
     const dbCategories = data.filter((c: Category) => !DELETED_CATEGORY_IDS.has(c.id))
-    const topLevel = dbCategories.filter((c: Category) => !c.parent_id)
+    const mockCatMap = new Map(activeMockCategories.map((c) => [c.id, c]))
+    const mockCatSlugMap = new Map(activeMockCategories.map((c) => [c.slug, c]))
+
+    const mergedDbCategories = dbCategories.map((dbc: Category) => {
+      const override = mockCatMap.get(dbc.id) || mockCatSlugMap.get(dbc.slug)
+      return override ? { ...dbc, ...override } : dbc
+    })
+
+    const dbIds = new Set(mergedDbCategories.map((c: Category) => c.id))
+    const dbSlugs = new Set(mergedDbCategories.map((c: Category) => c.slug))
+    const uniqueMock = activeMockCategories.filter((c) => !dbIds.has(c.id) && !dbSlugs.has(c.slug))
+    const all = [...mergedDbCategories, ...uniqueMock]
+
+    const topLevel = all.filter((c: Category) => !c.parent_id)
     return topLevel.map((parent: Category) => ({
       ...parent,
-      children: dbCategories.filter((c: Category) => c.parent_id === parent.id),
+      children: all.filter((c: Category) => c.parent_id === parent.id),
     }))
   } catch {
     return activeMockCategories
@@ -32,6 +116,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getAllAdminCategories(): Promise<Category[]> {
+  loadCategoriesFromFile()
   const activeMockCategories = MOCK_CATEGORIES.filter((c) => !DELETED_CATEGORY_IDS.has(c.id))
   const supabase = createAdminClient() || createClient()
   if (!supabase) return activeMockCategories
@@ -43,7 +128,21 @@ export async function getAllAdminCategories(): Promise<Category[]> {
       .order('sort_order', { ascending: true })
 
     if (error || !data || data.length === 0) return activeMockCategories
-    return data.filter((c: Category) => !DELETED_CATEGORY_IDS.has(c.id))
+    
+    const dbCategories = data.filter((c: Category) => !DELETED_CATEGORY_IDS.has(c.id))
+    const mockCatMap = new Map(activeMockCategories.map((c) => [c.id, c]))
+    const mockCatSlugMap = new Map(activeMockCategories.map((c) => [c.slug, c]))
+
+    const mergedDbCategories = dbCategories.map((dbc: Category) => {
+      const override = mockCatMap.get(dbc.id) || mockCatSlugMap.get(dbc.slug)
+      return override ? { ...dbc, ...override } : dbc
+    })
+
+    const dbIds = new Set(mergedDbCategories.map((c: Category) => c.id))
+    const dbSlugs = new Set(mergedDbCategories.map((c: Category) => c.slug))
+    const uniqueMock = activeMockCategories.filter((c) => !dbIds.has(c.id) && !dbSlugs.has(c.slug))
+
+    return [...mergedDbCategories, ...uniqueMock]
   } catch {
     return activeMockCategories
   }
@@ -66,13 +165,15 @@ export async function saveCategory(category: Partial<Category>): Promise<{ succe
     is_visible: category.is_visible !== false,
   }
 
-  // Update in-memory categories array
+  // Update in-memory categories array & save to file
   const existingIdx = MOCK_CATEGORIES.findIndex((c) => c.id === catId || c.slug === updatedCategory.slug)
   if (existingIdx >= 0) {
     MOCK_CATEGORIES[existingIdx] = { ...MOCK_CATEGORIES[existingIdx], ...updatedCategory }
   } else {
     MOCK_CATEGORIES.unshift(updatedCategory)
   }
+
+  saveCategoriesToFile()
 
   if (supabase) {
     try {
@@ -92,6 +193,7 @@ export async function saveCategory(category: Partial<Category>): Promise<{ succe
       const { data: catDb } = await supabase.from('categories').upsert([catPayload], { onConflict: 'slug' }).select().single()
       if (catDb?.id) {
         updatedCategory.id = catDb.id
+        saveCategoriesToFile()
       }
     } catch (err: any) {
       console.warn('Supabase category save fallback:', err?.message)
@@ -107,6 +209,7 @@ export async function deleteCategory(id: string): Promise<{ success: boolean; er
   if (catIdx >= 0) {
     MOCK_CATEGORIES.splice(catIdx, 1)
   }
+  saveCategoriesToFile()
 
   const supabase = createAdminClient() || createClient()
   if (supabase) {
@@ -133,6 +236,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 }
 
 export async function getProducts(categorySlug?: string): Promise<Product[]> {
+  loadProductsFromFile()
   const activeMockProducts = MOCK_PRODUCTS.filter((p) => !DELETED_PRODUCT_IDS.has(p.id) && p.is_published !== false)
   const supabase = createClient()
 
@@ -167,12 +271,19 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
             images: p.images || [],
           }))
 
-        // Merge DB products with active mock products, giving priority to DB products
-        const dbProductIds = new Set(dbProducts.map((p) => p.id))
-        const dbProductSlugs = new Set(dbProducts.map((p) => p.slug))
+        const mockMap = new Map(activeMockProducts.map((p) => [p.id, p]))
+        const mockSlugMap = new Map(activeMockProducts.map((p) => [p.slug, p]))
+
+        const mergedDbProducts = dbProducts.map((dbp) => {
+          const override = mockMap.get(dbp.id) || mockSlugMap.get(dbp.slug)
+          return override ? { ...dbp, ...override } : dbp
+        })
+
+        const dbProductIds = new Set(mergedDbProducts.map((p) => p.id))
+        const dbProductSlugs = new Set(mergedDbProducts.map((p) => p.slug))
         const uniqueMockProducts = activeMockProducts.filter((p) => !dbProductIds.has(p.id) && !dbProductSlugs.has(p.slug))
 
-        allProducts = [...dbProducts, ...uniqueMockProducts]
+        allProducts = [...mergedDbProducts, ...uniqueMockProducts]
       }
     } catch {
       // Fallback to activeMockProducts
@@ -187,6 +298,7 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
 }
 
 export async function getAllAdminProducts(): Promise<Product[]> {
+  loadProductsFromFile()
   const activeMockProducts = MOCK_PRODUCTS.filter((p) => !DELETED_PRODUCT_IDS.has(p.id))
   const supabase = createAdminClient() || createClient()
 
@@ -220,11 +332,19 @@ export async function getAllAdminProducts(): Promise<Product[]> {
         images: p.images || [],
       }))
 
-    const dbProductIds = new Set(dbProducts.map((p) => p.id))
-    const dbProductSlugs = new Set(dbProducts.map((p) => p.slug))
+    const mockMap = new Map(activeMockProducts.map((p) => [p.id, p]))
+    const mockSlugMap = new Map(activeMockProducts.map((p) => [p.slug, p]))
+
+    const mergedDbProducts = dbProducts.map((dbp) => {
+      const override = mockMap.get(dbp.id) || mockSlugMap.get(dbp.slug)
+      return override ? { ...dbp, ...override } : dbp
+    })
+
+    const dbProductIds = new Set(mergedDbProducts.map((p) => p.id))
+    const dbProductSlugs = new Set(mergedDbProducts.map((p) => p.slug))
     const uniqueMockProducts = activeMockProducts.filter((p) => !dbProductIds.has(p.id) && !dbProductSlugs.has(p.slug))
 
-    return [...dbProducts, ...uniqueMockProducts]
+    return [...mergedDbProducts, ...uniqueMockProducts]
   } catch {
     return activeMockProducts
   }
@@ -270,13 +390,15 @@ export async function saveProduct(
     images: formattedImages,
   }
 
-  // Update in-memory MOCK_PRODUCTS
+  // Update in-memory MOCK_PRODUCTS & persist to file
   const existingIndex = MOCK_PRODUCTS.findIndex((p) => p.id === savedProductId || p.slug === fullProduct.slug)
   if (existingIndex >= 0) {
     MOCK_PRODUCTS[existingIndex] = { ...MOCK_PRODUCTS[existingIndex], ...fullProduct }
   } else {
     MOCK_PRODUCTS.unshift(fullProduct)
   }
+
+  saveProductsToFile()
 
   if (supabase) {
     try {
@@ -321,6 +443,7 @@ export async function saveProduct(
         if (upsertedProd?.id) {
           savedProductId = upsertedProd.id
           fullProduct.id = savedProductId
+          saveProductsToFile()
         }
 
         if (images.length > 0 && savedProductId) {
@@ -348,6 +471,7 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
   if (prodIdx >= 0) {
     MOCK_PRODUCTS.splice(prodIdx, 1)
   }
+  saveProductsToFile()
 
   const supabase = createAdminClient() || createClient()
   if (supabase) {
@@ -374,9 +498,18 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   return MOCK_PRODUCTS[0] || null
 }
 
-export async function getRelatedProducts(categoryId: string, currentProductId: string): Promise<Product[]> {
+export async function getRelatedProducts(categoryId: string, currentProductId: string, categorySlug?: string): Promise<Product[]> {
   const all = await getProducts()
-  return all.filter((p) => p.id !== currentProductId).slice(0, 4)
+  // Filter products matching the same category first
+  let sameCategory = all.filter(
+    (p) => p.id !== currentProductId && (p.category_id === categoryId || (categorySlug && p.category_slug === categorySlug))
+  )
+
+  // Append remaining products as fallback
+  const remaining = all.filter((p) => p.id !== currentProductId && !sameCategory.some((sc) => sc.id === p.id))
+  sameCategory = [...sameCategory, ...remaining]
+
+  return sameCategory
 }
 
 export async function submitEnquiry(enquiryData: {
@@ -487,10 +620,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     heritage_image_url: 'https://res.cloudinary.com/fl6gqfor/image/upload/v1787819081/gbm-marble-handicrafts/vedi-temple/xnddxikch5gcd3uii5mi.jpg',
   }
 
-  if (GLOBAL_SITE_SETTINGS) {
-    return { ...defaultSettings, ...GLOBAL_SITE_SETTINGS }
-  }
-
+  // 1. Try reading from Supabase
   const supabase = createAdminClient() || createClient()
   if (supabase) {
     try {
@@ -502,6 +632,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     } catch {}
   }
 
+  // 2. Try reading from lib/data/site-settings.json
   if (typeof window === 'undefined') {
     try {
       const fs = eval("require('fs')")
@@ -509,10 +640,15 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       const settingsPath = path.join(process.cwd(), 'lib', 'data', 'site-settings.json')
       if (fs.existsSync(settingsPath)) {
         const content = fs.readFileSync(settingsPath, 'utf8')
-        GLOBAL_SITE_SETTINGS = { ...defaultSettings, ...JSON.parse(content) }
+        const parsed = JSON.parse(content)
+        GLOBAL_SITE_SETTINGS = { ...defaultSettings, ...parsed }
         return GLOBAL_SITE_SETTINGS
       }
     } catch {}
+  }
+
+  if (GLOBAL_SITE_SETTINGS) {
+    return { ...defaultSettings, ...GLOBAL_SITE_SETTINGS }
   }
 
   return defaultSettings

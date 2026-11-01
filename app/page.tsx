@@ -6,7 +6,7 @@ import { GoogleMap } from '@/components/ui/GoogleMap'
 import { ChiselIcon, StoneBlockIcon, CaliperIcon, CrateIcon } from '@/components/ui/ChiselIcons'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
 import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/ScrollAnimation'
-import { ArrowRight, Phone, ArrowUpRight, Grid } from 'lucide-react'
+import { ArrowRight, Phone, ArrowUpRight, Grid, MapPin } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -213,7 +213,7 @@ export default async function HomePage() {
           </div>
         </FadeIn>
 
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-8">
           {categories.map((cat) => {
             const tagline = CATEGORY_TAGLINES[cat.slug] || cat.description || `Pure Makrana white marble ${cat.name.toLowerCase()} creations.`
             return (
@@ -222,7 +222,7 @@ export default async function HomePage() {
                   href={`/categories/${cat.slug}`}
                   className="group block space-y-3"
                 >
-                  <div className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] shadow-2xs">
+                  <div className="relative h-44 sm:h-72 rounded-lg overflow-hidden bg-[#F2EFE9] shadow-2xs">
                     {cat.banner_image_url && (
                       <Image
                         src={cat.banner_image_url}
@@ -278,19 +278,19 @@ export default async function HomePage() {
             </div>
           </FadeIn>
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
             {godStatues.map((prod) => {
               const coverImage = prod.images[0]?.image_url
               return (
                 <StaggerItem key={prod.id}>
                   <div className="group block space-y-3">
-                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                    <Link href={`/products/${prod.slug}`} className="relative h-44 sm:h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
                       {coverImage && (
                         <Image
                           src={coverImage}
                           alt={prod.name}
                           fill
-                          sizes="(max-width: 640px) 100vw, 25vw"
+                          sizes="(max-width: 640px) 50vw, 25vw"
                           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
@@ -298,17 +298,19 @@ export default async function HomePage() {
 
                     <div className="space-y-2">
                       <Link href={`/products/${prod.slug}`}>
-                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                        <h3 className="font-sans text-xs sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
                           {prod.name}
                         </h3>
                       </Link>
-                      <div className="flex items-center justify-between text-xs text-[#666666]">
-                        <span>{prod.material}</span>
+                      <div className="flex items-center justify-between text-[11px] sm:text-xs text-[#666666]">
+                        <span className="truncate">{prod.material}</span>
                         <a
-                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          href={`https://wa.me/919210702703?text=${encodeURIComponent(
+                            `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${prod.name}\n🖼️ Photo: ${coverImage || ''}\n💎 Material: ${prod.material}\n\nPlease share details.`
+                          )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors shrink-0 ml-1"
                         >
                           Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
                         </a>
@@ -344,19 +346,19 @@ export default async function HomePage() {
             </div>
           </FadeIn>
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
             {temples.map((prod) => {
               const coverImage = prod.images[0]?.image_url
               return (
                 <StaggerItem key={prod.id}>
                   <div className="group block space-y-3">
-                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                    <Link href={`/products/${prod.slug}`} className="relative h-44 sm:h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
                       {coverImage && (
                         <Image
                           src={coverImage}
                           alt={prod.name}
                           fill
-                          sizes="(max-width: 640px) 100vw, 25vw"
+                          sizes="(max-width: 640px) 50vw, 25vw"
                           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
@@ -364,17 +366,19 @@ export default async function HomePage() {
 
                     <div className="space-y-2">
                       <Link href={`/products/${prod.slug}`}>
-                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                        <h3 className="font-sans text-xs sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
                           {prod.name}
                         </h3>
                       </Link>
-                      <div className="flex items-center justify-between text-xs text-[#666666]">
-                        <span>{prod.category_name}</span>
+                      <div className="flex items-center justify-between text-[11px] sm:text-xs text-[#666666]">
+                        <span className="truncate">{prod.category_name}</span>
                         <a
-                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          href={`https://wa.me/919210702703?text=${encodeURIComponent(
+                            `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${prod.name}\n🖼️ Photo: ${coverImage || ''}\n📂 Category: ${prod.category_name}\n\nPlease share details.`
+                          )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors shrink-0 ml-1"
                         >
                           Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
                         </a>
@@ -410,19 +414,19 @@ export default async function HomePage() {
             </div>
           </FadeIn>
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-8">
             {fountainsAndBasins.map((prod) => {
               const coverImage = prod.images[0]?.image_url
               return (
                 <StaggerItem key={prod.id}>
                   <div className="group block space-y-3">
-                    <Link href={`/products/${prod.slug}`} className="relative h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
+                    <Link href={`/products/${prod.slug}`} className="relative h-44 sm:h-72 rounded-lg overflow-hidden bg-[#F2EFE9] block shadow-2xs">
                       {coverImage && (
                         <Image
                           src={coverImage}
                           alt={prod.name}
                           fill
-                          sizes="(max-width: 640px) 100vw, 25vw"
+                          sizes="(max-width: 640px) 50vw, 25vw"
                           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
@@ -430,17 +434,19 @@ export default async function HomePage() {
 
                     <div className="space-y-2">
                       <Link href={`/products/${prod.slug}`}>
-                        <h3 className="font-sans text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
+                        <h3 className="font-sans text-xs sm:text-base font-bold text-[#1A1A1A] group-hover:text-[#B08968] transition-colors line-clamp-1">
                           {prod.name}
                         </h3>
                       </Link>
-                      <div className="flex items-center justify-between text-xs text-[#666666]">
-                        <span>{prod.category_name}</span>
+                      <div className="flex items-center justify-between text-[11px] sm:text-xs text-[#666666]">
+                        <span className="truncate">{prod.category_name}</span>
                         <a
-                          href={`https://wa.me/919210702703?text=Hi%20GBM%20Marble,%20I%20am%20interested%20in%20"${encodeURIComponent(prod.name)}"`}
+                          href={`https://wa.me/919210702703?text=${encodeURIComponent(
+                            `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${prod.name}\n🖼️ Photo: ${coverImage || ''}\n📂 Category: ${prod.category_name}\n\nPlease share details.`
+                          )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors"
+                          className="text-[#1A1A1A] hover:text-[#B08968] font-medium inline-flex items-center gap-1 transition-colors shrink-0 ml-1"
                         >
                           Enquire <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
                         </a>
@@ -497,10 +503,10 @@ export default async function HomePage() {
         <FadeIn direction="up">
           <div className="border-b border-[#E5E2DC] pb-5">
             <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
-              Atelier Location
+              Atelier & Showroom Location
             </span>
             <h2 className="font-serif text-4xl font-bold text-[#1A1A1A]">
-              Visit Us in Rajasthan
+              Visit Our Workshop & Showroom
             </h2>
           </div>
         </FadeIn>
@@ -508,44 +514,75 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           <FadeIn direction="right" className="bg-white p-8 rounded-xl border border-[#E5E2DC]/70 shadow-2xs space-y-6">
             <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] border-b border-[#E5E2DC] pb-4">
-              GBM Marble Handicrafts
+              G.B.M. Marble & Handicraft
             </h3>
             <div className="space-y-5 text-sm">
               <div className="flex items-start gap-3.5">
+                <MapPin className="w-4 h-4 text-[#B08968] shrink-0 mt-1" />
+                <div>
+                  <p className="font-medium text-[#1A1A1A]">Workshop & Showroom:</p>
+                  <p className="text-xs text-[#555555] leading-relaxed mt-0.5">
+                    Sher Singh Complex, Opp. Pillar No-40, Dadri Road, Barola, Sector-49, Noida, U.P.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5">
                 <Phone className="w-4 h-4 text-[#B08968] shrink-0 mt-1" />
                 <div>
-                  <p className="font-medium text-[#1A1A1A]">Direct Direct Line:</p>
+                  <p className="font-medium text-[#1A1A1A]">Direct Calling Lines:</p>
                   <a href="tel:9210702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
                     +91 9210702703
                   </a>
-                  <a href="tel:9785702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
-                    +91 9785702703
+                  <a href="tel:9664258577" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
+                    +91 9664258577
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-3.5">
-                <WhatsAppIcon className="w-4 h-4 text-[#1A1A1A] fill-current shrink-0 mt-1" />
+                <WhatsAppIcon className="w-4 h-4 text-[#25D366] fill-current shrink-0 mt-1" />
                 <div>
-                  <p className="font-medium text-[#1A1A1A]">WhatsApp Inquiry:</p>
-                  <a
-                    href="https://wa.me/919210702703"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-xs text-[#1A1A1A] font-semibold hover:underline"
-                  >
-                    Chat on WhatsApp (+91 9210702703)
-                  </a>
+                  <p className="font-medium text-[#1A1A1A]">WhatsApp Inquiry (2 Lines):</p>
+                  <div className="space-y-1 mt-1">
+                    <a
+                      href="https://wa.me/919210702703"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-xs text-[#1A1A1A] hover:text-[#25D366] font-semibold flex items-center gap-1.5 hover:underline"
+                    >
+                      Line 1: +91 9210702703
+                    </a>
+                    <a
+                      href="https://wa.me/919664258577"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-xs text-[#1A1A1A] hover:text-[#25D366] font-semibold flex items-center gap-1.5 hover:underline"
+                    >
+                      Line 2: +91 9664258577
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <Link
-              href="/contact"
-              className="w-full bg-[#1A1A1A] hover:bg-[#B08968] text-white font-medium py-3.5 rounded-md text-xs uppercase tracking-wider block text-center transition-colors shadow-2xs"
-            >
-              Send Online Inquiry
-            </Link>
+            <div className="space-y-2.5 pt-2">
+              <a
+                href="https://maps.app.goo.gl/D5aLdbw6dZfESYSi6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-[#FAF8F5] hover:bg-[#F2EFE9] text-[#1A1A1A] border border-[#E5E2DC] font-medium py-3 rounded-md text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
+              >
+                <MapPin className="w-3.5 h-3.5 text-[#B08968]" />
+                Get Directions on Map
+              </a>
+              <Link
+                href="/contact"
+                className="w-full bg-[#1A1A1A] hover:bg-[#B08968] text-white font-medium py-3 rounded-md text-xs uppercase tracking-wider block text-center transition-colors shadow-2xs"
+              >
+                Send Online Inquiry
+              </Link>
+            </div>
           </FadeIn>
 
           <FadeIn direction="left" delay={0.2} className="lg:col-span-2 rounded-xl overflow-hidden border border-[#E5E2DC] shadow-2xs">

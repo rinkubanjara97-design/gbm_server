@@ -103,8 +103,8 @@ export function Footer() {
                   <a href="tel:9210702703" className="hover:text-white transition-colors">
                     +91 9210702703
                   </a>
-                  <a href="tel:9785702703" className="hover:text-white transition-colors">
-                    +91 9785702703
+                  <a href="tel:9664258577" className="hover:text-white transition-colors">
+                    +91 9664258577
                   </a>
                 </div>
               </li>
@@ -119,7 +119,16 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-[#B08968] shrink-0 mt-0.5" />
-                <span>GBM Marble Handicrafts, Near Marble Market, Makrana Road, Rajasthan, India - 305801</span>
+                <div>
+                  <a
+                    href="https://maps.app.goo.gl/D5aLdbw6dZfESYSi6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors leading-relaxed block"
+                  >
+                    Sher Singh Complex, Opp. Pillar No-40, Dadri Road, Barola, Sector-49, Noida, Uttar Pradesh - 201301
+                  </a>
+                </div>
               </li>
             </ul>
           </div>

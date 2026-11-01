@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
+import { revalidatePath } from 'next/cache'
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'fl6gqfor',
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
       cloudinary.uploader.upload_stream(
         {
           folder: 'gbm-marble-handicrafts',
-          transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+          resource_type: 'auto',
         },
         (error, result) => {
           if (error) reject(error)
@@ -33,7 +34,10 @@ export async function POST(request: Request) {
       ).end(buffer)
     })
 
+    revalidatePath('/', 'layout')
+
     return NextResponse.json({
+      success: true,
       url: result.secure_url,
       public_id: result.public_id,
     })

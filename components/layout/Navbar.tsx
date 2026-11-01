@@ -41,7 +41,7 @@ export function Navbar() {
         </span>
         <span className="hidden md:inline text-[#444]">•</span>
         <span className="hidden md:inline text-[#E5E2DC]">
-          Direct Atelier: +91 9210702703
+          Call / WhatsApp: +91 9210702703 | +91 9664258577
         </span>
       </div>
 
@@ -61,11 +61,11 @@ export function Navbar() {
                 <Image src="/logo.jpg" alt="GBM Marble Handicrafts Logo" fill className="object-cover rounded-full" />
               </div>
               <div>
-                <span className="font-serif text-xl font-bold tracking-tight block text-[#1A1A1A]">
-                  GBM Marble
+                <span className="font-serif text-lg sm:text-xl font-bold tracking-tight block text-[#1A1A1A]">
+                  G.B.M. Marble & Handicraft
                 </span>
                 <span className="text-[10px] tracking-wider uppercase font-sans font-semibold block text-[#B08968] -mt-0.5">
-                  Rajasthan Atelier
+                  Makrana Marble & Custom Mandirs
                 </span>
               </div>
             </Link>

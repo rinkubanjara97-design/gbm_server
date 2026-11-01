@@ -13,10 +13,10 @@ export default function ContactPage() {
           Get In Touch
         </span>
         <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1A1A1A]">
-          Contact GBM Marble Atelier
+          Contact G.B.M. Marble & Handicraft
         </h1>
         <p className="text-[#555555] text-base font-light leading-relaxed">
-          Have questions about custom statue dimensions, home temple orders, or international wooden crate shipping? Reach out directly to our Rajasthan atelier.
+          Have questions about custom statue dimensions, home temple orders, kitchen countertops, or wooden crate shipping? Reach out directly to our workshop & showroom.
         </p>
       </div>
 
@@ -125,7 +125,7 @@ export default function ContactPage() {
         {/* Contact Form Container */}
         <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-xl shadow-2xs border border-[#E5E2DC]/70">
           <h2 className="font-serif text-2xl font-bold text-[#1A1A1A] mb-6">
-            Send an Atelier Inquiry
+            Send Inquiry / Custom Order Request
           </h2>
           <ContactForm />
         </div>
@@ -134,7 +134,7 @@ export default function ContactPage() {
       {/* Interactive Google Map Section */}
       <div className="space-y-6">
         <h2 className="font-serif text-2xl font-bold text-[#1A1A1A]">
-          Atelier Google Map Location
+          Workshop & Showroom Google Map Location
         </h2>
         <div className="rounded-xl overflow-hidden border border-[#E5E2DC] shadow-2xs">
           <GoogleMap />

@@ -276,7 +276,7 @@ export default function AdminProductsPage() {
                   <th className="py-3.5 px-4">Image</th>
                   <th className="py-3.5 px-4">Product Name</th>
                   <th className="py-3.5 px-4">Category</th>
-                  <th className="py-3.5 px-4">Price</th>
+                  <th className="py-3.5 px-4">Quote / Status</th>
                   <th className="py-3.5 px-4">Material & Size</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
@@ -308,8 +308,8 @@ export default function AdminProductsPage() {
                         <span className="text-[10px] font-mono text-[#2B2723]/60">{prod.slug}</span>
                       </td>
                       <td className="py-3 px-4 font-mono font-semibold text-[#A63D2F]">{prod.category_name}</td>
-                      <td className="py-3 px-4 font-mono font-bold text-[#A63D2F]">
-                        {prod.price || 'Price on Request'}
+                      <td className="py-3 px-4 font-mono text-xs text-[#2B2723]/80">
+                        {prod.price || 'Custom Quote'}
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-mono text-[11px] text-[#2B2723]">{prod.material}</div>
@@ -469,15 +469,15 @@ export default function AdminProductsPage() {
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <div>
-                  <label className="block font-mono font-bold uppercase tracking-wider text-[#A63D2F] mb-1">
-                    Price (INR / Quote) *
+                  <label className="block font-mono font-bold uppercase tracking-wider text-[#2B2723] mb-1">
+                    Custom Quote (Optional)
                   </label>
                   <input
                     type="text"
                     value={editingProduct.price || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                    placeholder="e.g. ₹45,000"
-                    className="w-full px-3 py-2 rounded-sm border border-[#A63D2F]/40 font-mono font-bold text-[#A63D2F] text-xs focus:outline-none focus:ring-1 focus:ring-[#A63D2F]"
+                    placeholder="e.g. On Inquiry / Custom Order"
+                    className="w-full px-3 py-2 rounded-sm border border-[#E4DDCF] font-mono text-xs focus:outline-none focus:ring-1 focus:ring-[#B8924A]"
                   />
                 </div>
 

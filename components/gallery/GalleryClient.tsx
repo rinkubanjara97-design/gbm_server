@@ -116,7 +116,7 @@ export function GalleryClient({ categories, items }: GalleryClientProps) {
                 </Link>
                 <a
                   href={`https://wa.me/919210702703?text=${encodeURIComponent(
-                    `Namaste GBM Marble Handicrafts!\n\nI saw this photo in your gallery:\n📦 Item: ${item.product_name}\n🖼️ Photo: ${item.image_url}\n📂 Category: ${item.category_name}\n\nPlease share price & details.`
+                    `Namaste GBM Marble Handicrafts!\n\nI saw this photo in your gallery:\n📦 Item: ${item.product_name}\n🖼️ Photo: ${item.image_url}\n📂 Category: ${item.category_name}\n\nPlease share customization & quotation details.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

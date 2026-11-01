@@ -15,11 +15,11 @@ export function Footer() {
                 <Image src="/logo.jpg" alt="GBM Marble Handicrafts Logo" fill className="object-cover rounded-full" />
               </div>
               <span className="font-serif text-xl font-bold text-white tracking-tight">
-                GBM Marble
+                G.B.M. Marble & Handicraft
               </span>
             </div>
             <p className="text-[#D8D3CA]/70 text-xs leading-relaxed font-light">
-              Master stone sculptors and global exporters of pure white Makrana marble deity statues, bespoke home mandirs, Pietra Dura inlay tables, and architectural stone art.
+              Manufacturers of authentic pure white Makrana marble god statues, custom carved home temples (mandirs), jaali panels, fountains, kitchen counters & Rajasthani handicrafts. Available on order.
             </p>
             <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#B08968]">
               <span className="flex items-center gap-1.5 bg-[#242424] px-3 py-1 rounded-md border border-[#333]">
@@ -136,7 +136,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#2A2A2A] flex flex-col md:flex-row items-center justify-between text-xs text-[#888888] gap-4">
-          <p>© {new Date().getFullYear()} GBM Marble Handicrafts. Sculpted with devotion in Rajasthan.</p>
+          <p>© {new Date().getFullYear()} G.B.M. Marble & Handicraft. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link href="/about" className="hover:text-white transition-colors">
               About Workshop

@@ -11,27 +11,27 @@ import { ArrowRight, Phone, ArrowUpRight, Grid, MapPin } from 'lucide-react'
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-// Category one-liner descriptions map for high-fashion clean cards
+// Authentic Category one-liner descriptions for craftsmanship cards
 const CATEGORY_TAGLINES: Record<string, string> = {
-  'god-statues': 'Divine handcrafted Makrana deity idols carved with traditional precision.',
-  'carving-temple': 'Bespoke marble home shrines featuring architectural pillars and relief work.',
-  'corin-temple': 'Modern backlit CNC carved temples designed for minimalist contemporary sanctuaries.',
-  'eley-work-temple': 'Pietra Dura gemstone inlay temples adorned with semi-precious floral motifs.',
-  'fountain': 'Multi-tiered cascading marble water fountains and luxury garden fixtures.',
-  'handicrafts-items': 'Rajasthani decorative marble artifacts, urlis, and hand-painted minakari art.',
-  'jali-work-temple': 'Intricate marble lattice jali cutwork temples offering delicate light diffusion.',
-  'kitchen-bar-restro': 'Luxury custom marble countertops and architectural stone surfaces.',
-  'marble-basin': 'Sculpted countertop wash basins and fluted white marble sink bowls.',
-  'marble-chhatri': 'Heritage domed marble chhatri pavilions and garden canopy structures.',
-  'marble-fire-place': 'Classical white marble fireplace surrounds and architectural mantels.',
-  'marble-jali-panel': 'Precision lattice cutwork partition screens and decorative wall grills.',
-  'marble-singhasan': 'Royal carved marble thrones and pedestals for sacred deity idols.',
-  'marble-table-top': 'Pietra Dura stone inlay dining, coffee, and accent table tops.',
-  'marble-tulsi-stand': 'Ornate Makrana marble Tulsi Vrindavan stands for courtyard devotion.',
-  'painting-work-temple': 'Meenakari gold leaf painted marble temples and color decorated mandirs.',
-  'statue': 'Custom human portrait sculptures, artistic figures, and animal statues.',
-  'vedi-temple': 'Sacred marble havan vedi altars and traditional ritual structures.',
-  'carving-work': 'Custom hand chisel stone relief carving for architectural walls and pillars.',
+  'god-statues': 'Handcrafted pure white Makrana marble deity idols carved with fine facial features and polish.',
+  'carving-temple': 'Custom carved marble home temples (mandirs) with traditional pillars, domes and jaali work.',
+  'corin-temple': 'Modern CNC carved corian & marble mandirs with warm ambient backlighting.',
+  'eley-work-temple': 'Traditional marble temples adorned with delicate stone inlay and floral pietra dura art.',
+  'fountain': 'Multi-tiered cascading marble water fountains sculpted for homes, courtyards and gardens.',
+  'handicrafts-items': 'Rajasthani decorative marble artifacts, urlis, chowkis and traditional minakari hand-painted items.',
+  'jali-work-temple': 'Intricate hand-carved lattice jali cutwork temples designed for home puja spaces.',
+  'kitchen-bar-restro': 'Custom white marble countertops, dining surfaces, bar tops and commercial stone fitting.',
+  'marble-basin': 'Sculpted solid white marble wash basins and fluted countertop sink bowls.',
+  'marble-chhatri': 'Traditional domed Rajasthani marble chhatri pavilions and memorial structures.',
+  'marble-fire-place': 'Hand-carved classical marble fireplaces and ornamental decorative mantels.',
+  'marble-jali-panel': 'Precision lattice cutwork partition screens and decorative carved wall panels.',
+  'marble-singhasan': 'Royal carved marble singhasan thrones and pedestals for deity idols.',
+  'marble-table-top': 'Handcrafted marble dining, center and side table tops with gemstone inlay.',
+  'marble-tulsi-stand': 'Pure Makrana marble Tulsi Kyaras and Vrindavan stands for courtyard worship.',
+  'painting-work-temple': 'Hand-painted 24K gold foil and meenakari decorated marble temples.',
+  'statue': 'Custom marble human portrait busts, elephant statues and artistic stone figures.',
+  'vedi-temple': 'Traditional marble havan vedi altars and ritual puja structures.',
+  'carving-work': 'Custom hand-chiseled stone relief carving for temple walls and pillars.',
 }
 
 export default async function HomePage() {
@@ -57,17 +57,17 @@ export default async function HomePage() {
             <FadeIn direction="right" duration={0.8} className="lg:col-span-6 space-y-8">
               <div className="inline-flex items-center gap-2 bg-[#F2EFE9] text-[#1A1A1A] px-3.5 py-1.5 rounded-full text-xs font-sans font-medium tracking-tight">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B08968]" />
-                Rajasthan Heritage Stone Atelier
+                Direct Manufacturer • Pure Makrana Marble
               </div>
 
               <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-[#1A1A1A] leading-[1.08] tracking-tight">
-                Handcrafted Pure <br />
-                <span className="italic font-serif font-normal text-[#B08968]">Makrana Marble Statues</span> <br />
-                & Heritage Mandirs
+                Pure Makrana <br />
+                <span className="italic font-serif font-normal text-[#B08968]">Marble God Statues</span> <br />
+                & Custom Mandirs
               </h1>
 
               <p className="text-[#555555] text-base sm:text-lg font-light leading-relaxed max-w-xl">
-                Masterpiece deity idols, bespoke home temples, Pietra Dura gemstone table tops, and architectural fountains hand-carved by senior stone sculptors in Rajasthan.
+                Manufacturer of authentic white Makrana marble deity idols, custom home temples, stone jaali work, fountains, kitchen countertops & Rajasthani handicrafts. Available on order with safe wooden crate delivery.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">

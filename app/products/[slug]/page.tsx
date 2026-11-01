@@ -28,7 +28,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const coverImg = product.images.find((i) => i.is_cover)?.image_url || product.images[0]?.image_url || ''
 
   const whatsappMessage = encodeURIComponent(
-    `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${product.name}\n🖼️ Photo: ${coverImg}\n💎 Material: ${product.material}\n📏 Size: ${product.size}\n🏷️ Price: ${product.price || 'Price on Request'}\n\nPlease share details.`
+    `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${product.name}\n🖼️ Photo: ${coverImg}\n💎 Material: ${product.material}\n📏 Size: ${product.size}\n\nPlease share design details & custom order quotation.`
   )
   const whatsappUrl = `https://wa.me/919210702703?text=${whatsappMessage}`
 

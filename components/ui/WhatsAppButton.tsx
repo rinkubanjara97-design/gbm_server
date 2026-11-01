@@ -12,7 +12,7 @@ export function WhatsAppButton() {
   const num2 = '919664258577'
 
   const messageText = encodeURIComponent(
-    'Namaste GBM Marble Handicrafts! I am interested in your Makrana marble statues & home temples. Please share details.'
+    'Namaste G.B.M. Marble & Handicraft! I am interested in your marble statues, temples & handicrafts. Please share details.'
   )
 
   const waUrl1 = `https://wa.me/${num1}?text=${messageText}`
@@ -41,7 +41,7 @@ export function WhatsAppButton() {
                 <WhatsAppIcon className="w-4 h-4 fill-current" />
               </div>
               <div>
-                <h4 className="font-serif text-sm font-bold text-white">GBM Marble WhatsApp</h4>
+                <h4 className="font-serif text-sm font-bold text-white">G.B.M. Marble WhatsApp</h4>
                 <p className="text-[10px] text-[#B08968] font-sans">Choose WhatsApp line to chat</p>
               </div>
             </div>
@@ -88,7 +88,7 @@ export function WhatsAppButton() {
                   <WhatsAppIcon className="w-4 h-4 fill-current" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-sans font-medium text-[#888888] block uppercase tracking-wider">Line 2 (Atelier Workshop)</span>
+                  <span className="text-[10px] font-sans font-medium text-[#888888] block uppercase tracking-wider">Line 2 (Workshop & Showroom)</span>
                   <span className="font-mono text-xs font-bold text-[#1A1A1A] group-hover:text-emerald-700 transition-colors">
                     +91 9664258577
                   </span>

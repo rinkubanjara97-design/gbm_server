@@ -4,7 +4,7 @@ import { Fraunces, Plus_Jakarta_Sans, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { LayoutShell } from '@/components/layout/LayoutShell'
 import { NavigationProgress } from '@/components/ui/NavigationProgress'
-import { ClickFeedback } from '@/components/ui/ClickFeedback'
+
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -92,7 +92,6 @@ export default function RootLayout({
     },
     url: 'https://gbmmarble.com',
     telephone: ['+919210702703', '+919664258577'],
-    priceRange: '₹₹ - ₹₹₹₹',
     areaServed: ['India', 'USA', 'UK', 'UAE', 'Worldwide'],
     knowsAbout: [
       'Makrana Marble',
@@ -115,7 +114,6 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
-        <ClickFeedback />
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>

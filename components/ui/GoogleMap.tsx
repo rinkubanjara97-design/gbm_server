@@ -13,7 +13,7 @@ export function GoogleMap() {
         allowFullScreen
         loading="lazy"
         referrerPolicy="strict-origin-when-cross-origin"
-        title="GBM Marble Handicrafts Workshop Location"
+        title="G.B.M. Marble & Handicraft Workshop & Showroom Location"
       />
       <div className="absolute bottom-4 right-4 z-10">
         <a

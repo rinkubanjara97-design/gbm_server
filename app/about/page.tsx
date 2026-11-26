@@ -1,9 +1,18 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Metadata } from 'next'
 import { ArrowRight } from 'lucide-react'
 import { ChiselIcon, StoneBlockIcon, CaliperIcon, CrateIcon } from '@/components/ui/ChiselIcons'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
+
+export const metadata: Metadata = {
+  title: 'About Us | Makrana Stone Sculptors & Workshop in Noida Sector 49',
+  description: 'Discover the legacy of G.B.M. Marble & Handicraft. Senior stone sculptors creating authentic pure white Makrana marble deity statues and custom home mandirs in Noida, Delhi NCR.',
+  alternates: {
+    canonical: 'https://gbmmarble.com/about',
+  },
+}
 
 export default function AboutPage() {
   return (
@@ -15,10 +24,10 @@ export default function AboutPage() {
             Our Heritage & Story
           </span>
           <h1 className="font-serif text-5xl sm:text-6xl font-bold text-white">
-            GBM Marble Handicrafts
+            G.B.M. Marble & Handicraft
           </h1>
           <p className="text-[#D8D3CA]/80 text-lg font-light max-w-2xl mx-auto leading-relaxed">
-            Sculpting eternal divine beauty from pure white Makrana marble for home mandirs, luxury villas, and collectors worldwide.
+            Sculpting divine beauty from pure white Makrana marble for home mandirs, luxury villas, and devotees across Delhi NCR & worldwide.
           </p>
         </div>
       </section>
@@ -28,16 +37,16 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block">
-              Rajasthan Stone Architecture
+              Heritage Stone Carving • Noida Workshop
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1A1A1A] leading-tight">
               Preserving Traditional Stone Chiseling for Generations
             </h2>
             <p className="text-[#555555] text-sm leading-relaxed font-light">
-              GBM Marble Handicrafts inherits Rajasthan&apos;s rich legacy of master stone carvers. Makrana white marble—the very same marble chosen for the Taj Mahal—is globally celebrated for its translucent crystal structure and timeless sheen that never dulls over centuries.
+              With generational roots in Rajasthan&apos;s stone carving tradition, G.B.M. Marble & Handicraft serves clients across India and internationally from our full-fledged workshop and showroom located at Sher Singh Complex, Dadri Road, Barola, Sector-49, Noida.
             </p>
             <p className="text-[#555555] text-sm leading-relaxed font-light">
-              Every idol of Lord Ganesha, Radha Krishna, Shiv Parivar, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom beauty.
+              We exclusively work with pure white Makrana marble—the historic stone chosen for the Taj Mahal—celebrated worldwide for its translucent crystalline density and enduring luster that never yellows or fades. Every idol of Lord Ganesha, Radha Krishna, Shiv Parivar, Ram Darbar, or custom home temple is sculpted using traditional hand chisels and diamond-polished for generations of reverence.
             </p>
 
             <div className="pt-4 flex items-center gap-8 border-t border-[#E5E2DC]">
@@ -136,7 +145,7 @@ export default function AboutPage() {
           Ready to Commission Your Custom Sculpture?
         </h2>
         <p className="text-[#555555] text-sm font-light leading-relaxed">
-          Talk directly to our master stone artisans in Rajasthan for bespoke size guidance and custom temple design consultations.
+          Talk directly to our master stone artisans at our Noida Sector-49 showroom & workshop for custom size guidance and bespoke temple design consultations.
         </p>
         <div className="flex justify-center gap-4">
           <a

@@ -47,8 +47,24 @@ export default async function HomePage() {
   const fountainsAndBasins = allProducts.filter((p) => p.category_slug === 'fountain' || p.category_slug === 'marble-basin' || p.category_slug === 'marble-table-top').slice(0, 4)
   const handicraftsAndArt = allProducts.filter((p) => p.category_slug === 'handicrafts-items' || p.category_slug === 'statue' || p.category_slug === 'marble-tulsi-stand').slice(0, 4)
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'G.B.M. Marble & Handicraft',
+    url: 'https://gbmmarble.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://gbmmarble.com/categories?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   return (
     <div className="space-y-28 pb-20 overflow-hidden bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       {/* 1. Grand Modern Luxury Split Hero Section */}
       <section className="relative min-h-[85vh] flex items-center pt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-16 md:py-24">
@@ -198,7 +214,7 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-[#E5E2DC] pb-6">
             <div>
               <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block mb-1">
-                Rajasthan Atelier Portfolio
+                Master Artisan Portfolio
               </span>
               <h2 className="font-serif text-4xl font-bold text-[#1A1A1A]">
                 Explore All 19 Categories
@@ -465,23 +481,23 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <FadeIn direction="right" className="space-y-6">
             <span className="text-xs font-sans font-medium uppercase tracking-wider text-[#B08968] block">
-              Rajasthan Sculpting Heritage
+              Heritage Stone Craftsmanship • Noida Workshop
             </span>
             <h2 className="font-serif text-4xl sm:text-5xl font-bold leading-tight">
               Carving Pure Makrana Stone with Devotion & Precision
             </h2>
             <p className="text-[#D8D3CA]/80 text-base font-light leading-relaxed">
-              Based in Rajasthan, GBM Marble Handicrafts inherits centuries of master stone sculpting tradition. White Makrana marble is hand-selected for its crystal density, pure white translucency, and timeless durability that never yellows over time.
+              Carrying forward Rajasthan&apos;s master stone sculpting legacy, G.B.M. Marble & Handicraft serves patrons across Delhi NCR and worldwide from our Noida Sector-49 workshop and showroom. We use authentic pure white Makrana marble—renowned for its dense crystalline structure and lifelong natural sheen.
             </p>
             <p className="text-[#D8D3CA]/80 text-base font-light leading-relaxed">
-              Every idol of Lord Ganesha, Krishna, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom beauty.
+              Every idol of Lord Ganesha, Radha Krishna, Shiv Parivar, Ram Darbar, or custom home temple is sculpted using traditional hand chisels and finished with diamond polishing for heirloom durability.
             </p>
             <div className="pt-4">
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2 bg-[#B08968] hover:bg-white hover:text-[#1A1A1A] text-white font-medium px-8 py-4 rounded-md text-sm transition-all"
               >
-                Discover Our Atelier Story <ArrowRight className="w-4 h-4" />
+                Discover Our Heritage & Workshop <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </FadeIn>
@@ -534,8 +550,8 @@ export default async function HomePage() {
                   <a href="tel:9210702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
                     +91 9210702703
                   </a>
-                  <a href="tel:9664258577" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
-                    +91 9664258577
+                  <a href="tel:9785702703" className="font-mono text-sm text-[#B08968] font-bold block hover:underline">
+                    +91 9785702703
                   </a>
                 </div>
               </div>
@@ -554,12 +570,12 @@ export default async function HomePage() {
                       Line 1: +91 9210702703
                     </a>
                     <a
-                      href="https://wa.me/919664258577"
+                      href="https://wa.me/919785702703"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-mono text-xs text-[#1A1A1A] hover:text-[#25D366] font-semibold flex items-center gap-1.5 hover:underline"
                     >
-                      Line 2: +91 9664258577
+                      Line 2: +91 9785702703
                     </a>
                   </div>
                 </div>

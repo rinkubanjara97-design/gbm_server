@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getProductBySlug, getRelatedProducts } from '@/lib/supabase/service'
 import { ProductGallery } from '@/components/product/ProductGallery'
@@ -17,6 +18,38 @@ interface ProductPageProps {
   }
 }
 
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug)
+  if (!product) return {}
+
+  const coverImg = product.images.find((i) => i.is_cover)?.image_url || product.images[0]?.image_url || '/logo.jpg'
+  const title = `${product.name} | Makrana Marble in Noida | G.B.M. Marble`
+  const description = `${product.name} hand-sculpted from pure ${product.material}. Size: ${product.size}. Finish: ${product.finish}. Custom dimensions available at G.B.M. Marble & Handicraft Noida Sector 49 showroom.`
+
+  return {
+    title,
+    description,
+    keywords: [
+      `${product.name.toLowerCase()} noida`,
+      `makrana marble ${product.name.toLowerCase()}`,
+      `buy ${product.name.toLowerCase()} delhi ncr`,
+      `custom ${product.name.toLowerCase()} workshop`,
+      'makrana marble statue noida',
+      'marble mandir manufacturer noida'
+    ],
+    openGraph: {
+      title,
+      description,
+      url: `https://gbmmarble.com/products/${params.slug}`,
+      siteName: 'G.B.M. Marble & Handicraft',
+      images: [{ url: coverImg, alt: product.name }],
+    },
+    alternates: {
+      canonical: `https://gbmmarble.com/products/${params.slug}`,
+    },
+  }
+}
+
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const product = await getProductBySlug(params.slug)
   if (!product) {
@@ -28,12 +61,82 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const coverImg = product.images.find((i) => i.is_cover)?.image_url || product.images[0]?.image_url || ''
 
   const whatsappMessage = encodeURIComponent(
-    `Namaste GBM Marble Handicrafts!\n\nI am interested in inquiring about:\n📦 Product: ${product.name}\n🖼️ Photo: ${coverImg}\n💎 Material: ${product.material}\n📏 Size: ${product.size}\n\nPlease share design details & custom order quotation.`
+    `Namaste G.B.M. Marble & Handicraft!\n\nI am interested in inquiring about:\n📦 Product: ${product.name}\n🖼️ Photo: ${coverImg}\n💎 Material: ${product.material}\n📏 Size: ${product.size}\n\nPlease share design details & custom order quotation.`
   )
   const whatsappUrl = `https://wa.me/919210702703?text=${whatsappMessage}`
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images.map((i) => i.image_url),
+    description: product.description,
+    brand: {
+      '@type': 'Brand',
+      name: 'G.B.M. Marble & Handicraft',
+    },
+    material: product.material,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'INR',
+      availability: 'https://schema.org/InStock',
+      url: `https://gbmmarble.com/products/${product.slug}`,
+      seller: {
+        '@type': 'LocalBusiness',
+        name: 'G.B.M. Marble & Handicraft',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Sher Singh Complex, Opp Pillar No-40, Dadri Road, Barola, Sector-49',
+          addressLocality: 'Noida',
+          addressRegion: 'Uttar Pradesh',
+          postalCode: '201301',
+          addressCountry: 'IN',
+        },
+      },
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://gbmmarble.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Categories',
+        item: 'https://gbmmarble.com/categories',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.category_name,
+        item: `https://gbmmarble.com/categories/${product.category_slug}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: product.name,
+        item: `https://gbmmarble.com/products/${product.slug}`,
+      },
+    ],
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs font-sans text-[#888888]">
         <Link href="/" className="hover:text-[#1A1A1A]">

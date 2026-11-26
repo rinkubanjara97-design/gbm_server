@@ -1,8 +1,17 @@
 import React from 'react'
+import { Metadata } from 'next'
 import { ContactForm } from '@/components/contact/ContactForm'
 import { GoogleMap } from '@/components/ui/GoogleMap'
 import { Phone, Mail, MapPin, Globe, ExternalLink } from 'lucide-react'
 import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon'
+
+export const metadata: Metadata = {
+  title: 'Contact Workshop & Showroom | Noida Sector 49 Dadri Road',
+  description: 'Visit our marble statue and mandir showroom in Noida Sector 49: Sher Singh Complex, Opp Pillar No-40, Dadri Road, Barola. Direct Call / WhatsApp: +91 9210702703, +91 9785702703.',
+  alternates: {
+    canonical: 'https://gbmmarble.com/contact',
+  },
+}
 
 export default function ContactPage() {
   return (
@@ -39,8 +48,8 @@ export default function ContactPage() {
                   <a href="tel:9210702703" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
                     +91 9210702703
                   </a>
-                  <a href="tel:9664258577" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
-                    +91 9664258577
+                  <a href="tel:9785702703" className="font-mono font-bold text-[#1A1A1A] hover:text-[#B08968] block text-base transition-colors">
+                    +91 9785702703
                   </a>
                 </div>
               </div>
@@ -62,12 +71,12 @@ export default function ContactPage() {
                       <span className="text-[10px] font-sans font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Chat</span>
                     </a>
                     <a
-                      href="https://wa.me/919664258577?text=Namaste%20GBM%20Marble,%20I%20have%20an%20inquiry."
+                      href="https://wa.me/919785702703?text=Namaste%20GBM%20Marble,%20I%20have%20an%20inquiry."
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-mono font-bold text-[#1A1A1A] hover:text-[#25D366] flex items-center gap-1.5 text-sm transition-colors"
                     >
-                      <span>Line 2: +91 9664258577</span>
+                      <span>Line 2: +91 9785702703</span>
                       <span className="text-[10px] font-sans font-semibold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Chat</span>
                     </a>
                   </div>

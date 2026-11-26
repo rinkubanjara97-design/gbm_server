@@ -41,7 +41,7 @@ export function Navbar() {
         </span>
         <span className="hidden md:inline text-[#444]">•</span>
         <span className="hidden md:inline text-[#E5E2DC]">
-          Call / WhatsApp: +91 9210702703 | +91 9664258577
+          Call / WhatsApp: +91 9210702703 | +91 9785702703
         </span>
       </div>
 

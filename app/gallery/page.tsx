@@ -1,10 +1,19 @@
 import React from 'react'
+import { Metadata } from 'next'
 import { getCategories, getProducts } from '@/lib/supabase/service'
 import { GalleryClient } from '@/components/gallery/GalleryClient'
 import { FadeIn } from '@/components/ui/ScrollAnimation'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+export const metadata: Metadata = {
+  title: 'Photography Portfolio & Showcase | Marble Statues & Mandirs',
+  description: 'Explore the high-resolution photo gallery of hand-carved Makrana marble deity idols, home mandirs, stone jaali, and fountains by G.B.M. Marble & Handicraft Noida.',
+  alternates: {
+    canonical: 'https://gbmmarble.com/gallery',
+  },
+}
 
 export default async function GalleryPage() {
   const [categories, products] = await Promise.all([

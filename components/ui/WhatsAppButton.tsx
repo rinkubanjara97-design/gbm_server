@@ -9,7 +9,7 @@ export function WhatsAppButton() {
   const menuRef = useRef<HTMLDivElement>(null)
 
   const num1 = '919210702703'
-  const num2 = '919664258577'
+  const num2 = '919785702703'
 
   const messageText = encodeURIComponent(
     'Namaste G.B.M. Marble & Handicraft! I am interested in your marble statues, temples & handicrafts. Please share details.'
@@ -90,7 +90,7 @@ export function WhatsAppButton() {
                 <div>
                   <span className="text-[10px] font-sans font-medium text-[#888888] block uppercase tracking-wider">Line 2 (Workshop & Showroom)</span>
                   <span className="font-mono text-xs font-bold text-[#1A1A1A] group-hover:text-emerald-700 transition-colors">
-                    +91 9664258577
+                    +91 9785702703
                   </span>
                 </div>
               </div>
